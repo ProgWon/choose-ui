@@ -26,8 +26,8 @@ class SkillStructure(unittest.TestCase):
 
     def test_description_defines_negative_activation_boundary(self):
         frontmatter = re.match(r"\A---\n(.*?)\n---\n", self.content, re.DOTALL).group(1)
-        self.assertIn("Do not use for visual-only styling", frontmatter)
-        self.assertIn("interaction pattern is already fixed", frontmatter)
+        self.assertIn("component type is unresolved", frontmatter)
+        self.assertIn("must require a choice among interaction patterns", frontmatter)
 
     def test_skill_is_concise_and_finished(self):
         self.assertLess(len(self.content.splitlines()), 500)

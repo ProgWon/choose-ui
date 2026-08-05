@@ -12,7 +12,14 @@ sys.path.insert(0, str(SKILL_DIR / "scripts"))
 sys.path.insert(0, str(ROOT / "evals"))
 
 from rule_engine import choose_ui  # noqa: E402
-from run_skill_evals import parse_stream, score_behavior, score_trigger  # noqa: E402
+from run_skill_evals import (  # noqa: E402
+    TRIGGER_TOOLS,
+    contains_all_groups,
+    field_block,
+    parse_stream,
+    score_behavior,
+    score_trigger,
+)
 
 
 class CanonicalRules(unittest.TestCase):
@@ -38,6 +45,7 @@ class CanonicalRules(unittest.TestCase):
         trigger_cases = suite["trigger_cases"]
         self.assertGreaterEqual(sum(case["should_trigger"] for case in trigger_cases), 3)
         self.assertGreaterEqual(sum(not case["should_trigger"] for case in trigger_cases), 3)
+        self.assertEqual(["Skill", "Read", "Grep", "Glob"], TRIGGER_TOOLS)
 
     def test_skill_level_eval_covers_output_and_judgment(self):
         suite = json.loads((ROOT / "evals" / "skill-cases.json").read_text(encoding="utf-8"))
@@ -47,6 +55,8 @@ class CanonicalRules(unittest.TestCase):
         self.assertTrue(any("low" in case.get("confidence_terms", []) for case in behavior))
         self.assertTrue(all(case.get("semantic_checks") for case in behavior))
         self.assertFalse(any("must_include" in case for case in behavior))
+        inventory_case = next(case for case in behavior if case["name"] == "project component inventory adapts names")
+        self.assertEqual(["Skill", "Read", "Grep", "Glob"], inventory_case["tools"])
 
     def test_rulebook_covers_full_flag_grid_without_fallback(self):
         fields = itertools.product(
@@ -117,6 +127,63 @@ class CanonicalRules(unittest.TestCase):
         )
         self.assertTrue(trigger.passed)
         self.assertTrue(behavior.passed)
+
+    def test_recommendation_term_groups_require_each_concept(self):
+        groups = [["search", "검색"], ["multiple", "다중"], ["list", "리스트", "combobox"]]
+        self.assertTrue(contains_all_groups("추천: 검색 가능한 다중 선택 리스트", groups))
+        self.assertFalse(contains_all_groups("추천: 검색 가능한 단일 선택 리스트", groups))
+
+    def test_multiline_recommendation_is_scored_as_one_field(self):
+        response = "\n".join(
+            [
+                "Recommendation: 모바일 필터 패널",
+                "  상단 검색 입력과 다중 선택 체크박스 리스트",
+                "Confidence: medium",
+                "Why: 명시된 검색 요구를 유지합니다.",
+            ]
+        )
+        block = field_block(response, "recommendation")
+        self.assertIn("검색 입력", block)
+        self.assertNotIn("Confidence", block)
+
+    def test_full_korean_field_aliases_accept_natural_avoid_label(self):
+        response = "\n".join(
+            [
+                "추천: 체크박스",
+                "확신도: 높음",
+                "이유: 제출 시점에 확정되는 독립 동의입니다.",
+                "피해야 할 것: 스위치",
+                "필요한 상태: 선택, 미선택, 오류",
+                "접근성: 레이블을 체크박스와 연결합니다.",
+                "가정: 없음",
+                "근거: WAI-ARIA APG",
+            ]
+        )
+        stream = "\n".join(
+            [
+                json.dumps(
+                    {
+                        "type": "assistant",
+                        "message": {
+                            "content": [
+                                {"type": "tool_use", "name": "Skill", "input": {"skill": "choose-ui"}}
+                            ]
+                        },
+                    }
+                ),
+                json.dumps({"type": "result", "is_error": False, "result": response}, ensure_ascii=False),
+            ]
+        )
+        result = score_behavior(
+            {
+                "name": "Korean full",
+                "expected_mode": "full",
+                "recommendation_terms": ["checkbox", "체크박스"],
+                "confidence_terms": ["high", "높음"],
+            },
+            parse_stream(stream),
+        )
+        self.assertTrue(result.passed, result.checks)
 
     def test_seed_links_use_canonical_component_paths(self):
         sources = (SKILL_DIR / "references" / "sources.md").read_text(encoding="utf-8")

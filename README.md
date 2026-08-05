@@ -180,6 +180,22 @@ python3 evals/run_skill_evals.py --suite all --repeats 3 --model sonnet
 
 Automatic scoring is language-tolerant for Korean and English field labels and component terms. Judgment items under `semantic_checks` are printed for human or model-judge review rather than treated as brittle substring assertions. Live model evaluations are intentionally not part of CI because they require Claude authentication, spend budget, and can vary between runs.
 
+The runner verifies its required flags against `claude --help` before spending model budget. If Claude Code is not installed as a direct executable, pass a command prefix such as `--claude "npx -y @anthropic-ai/claude-code@2.1.222"`. Trigger cases expose `Skill` plus the non-mutating `Read`, `Grep`, and `Glob` tools so implementation-shaped negative prompts have a realistic alternative to forced skill use. Behavior cases expose only `Skill` unless a case opts into project inventory inspection. User-enabled plugins are disabled by default so their skill-selection policies cannot contaminate activation rates; use `--keep-user-plugins` only when intentionally measuring that environment.
+
+### Live benchmark
+
+Measured on 2026-08-05 with Claude Code 2.1.221, the `sonnet` model alias, three fresh sessions per case, sequential execution, a 120-second timeout, and user plugins isolated:
+
+| Measure | Result |
+|---|---:|
+| Positive activation | 9/9 (100%) |
+| Negative false positives | 0/9 (0%) |
+| Trigger-suite automatic checks | 18/18 (100%) |
+| Behavior/output automatic checks | 17/18 (94%) |
+| Manual semantic checks | 23/24 (96%) |
+
+The complete campaign reported $3.47 in model cost. Its single behavior miss was an underspecified prompt that the model sometimes treated as form input instead of recognizing unknown intent. After the case explicitly stated that intent was unresolved, the targeted regression passed 3/3. A separately strengthened explicit-search regression also passed 3/3 after manual response review. These targeted results are reported separately rather than retroactively presenting the complete run as perfect.
+
 ## Contributing
 
 The best contribution is a concrete product situation where the current recommendation is wrong or underspecified. Include user intent, constraints, expected pattern, and a primary source or research finding when possible.
