@@ -28,8 +28,9 @@ class SkillStructure(unittest.TestCase):
 
     def test_description_defines_negative_activation_boundary(self):
         frontmatter = re.match(r"\A---\n(.*?)\n---\n", self.content, re.DOTALL).group(1)
-        self.assertIn("component type is unresolved", frontmatter)
-        self.assertIn("must require a choice among interaction patterns", frontmatter)
+        self.assertIn("end-to-end service", frontmatter)
+        self.assertIn("even when the user only asks to build the service", frontmatter)
+        self.assertIn("Do not use for backend-only", frontmatter)
 
     def test_skill_is_concise_and_finished(self):
         self.assertLess(len(self.content.splitlines()), 500)
@@ -40,6 +41,17 @@ class SkillStructure(unittest.TestCase):
         self.assertEqual("choose-ui", manifest["name"])
         self.assertEqual("./.claude/skills/", manifest["skills"])
         self.assertEqual("https://github.com/ProgWon/choose-ui", manifest["repository"])
+
+    def test_plugin_auto_activation_hook_is_packaged(self):
+        manifest = json.loads((PLUGIN_DIR / "plugin.json").read_text(encoding="utf-8"))
+        marketplace = json.loads((PLUGIN_DIR / "marketplace.json").read_text(encoding="utf-8"))
+        self.assertEqual("1.1.0", manifest["version"])
+        self.assertEqual(manifest["version"], marketplace["plugins"][0]["version"])
+        hooks = json.loads((ROOT / "hooks" / "hooks.json").read_text(encoding="utf-8"))
+        command = hooks["hooks"]["UserPromptSubmit"][0]["hooks"][0]
+        self.assertEqual("python3", command["command"])
+        self.assertEqual(["${CLAUDE_PLUGIN_ROOT}/scripts/auto_activate.py"], command["args"])
+        self.assertTrue((ROOT / "scripts" / "auto_activate.py").is_file())
 
     def test_claude_marketplace_installs_root_plugin(self):
         marketplace = json.loads((PLUGIN_DIR / "marketplace.json").read_text(encoding="utf-8"))

@@ -1,11 +1,13 @@
 ---
 name: choose-ui
-description: Select and justify a UI interaction pattern when the component type is unresolved. Use for explicit control comparisons, questions about which pattern fits an interaction, or behavioral UX audits where replacement is allowed. The request must require a choice among interaction patterns for selection, filtering, settings, navigation, or actions.
+description: Select and justify UI interaction patterns from user intent, real constraints, accessibility, and product context. Use proactively while planning, designing, implementing, or reviewing an end-to-end service, app, website, dashboard, admin, ecommerce, SaaS, or frontend—even when the user only asks to build the service and does not name components—whenever the work will introduce or choose interactive UI for input, selection, filtering, view switching, actions, navigation, or settings. Also use for explicit control comparisons and behavioral UX audits where replacement is allowed. Do not use for backend-only, API-only, or database-only work; visual-only styling or token changes; or implementation where the interaction pattern is already fixed and review is explicitly out of scope.
 ---
 
 # Choose UI
 
 Choose the smallest interaction that truthfully represents the user's task. Treat component choice as a product decision, not a styling preference.
+
+For a broad end-to-end product build, apply this workflow during planning before committing to interactive components. Do not wait for the user to name a dropdown, tab, filter, or other control.
 
 ## Workflow
 

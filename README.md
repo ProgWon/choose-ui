@@ -84,6 +84,12 @@ The installed skill is available as `/choose-ui:choose-ui`, and Claude can also 
 /plugin update choose-ui@ui-ux-skills
 ```
 
+### Automatic activation
+
+The Claude plugin also recognizes broad product-building requests such as `Build a booking service from scratch`, even when the user does not name a form, filter, or component. A local, zero-package `UserPromptSubmit` hook checks only the submitted prompt for product-build phrases and adds a private reminder for Claude to load Choose UI before choosing interactive components. It does not send data anywhere, modify the prompt, block the request, or activate for backend-only and visual-only work. The hook requires `python3`, which is also used by the optional rule and eval tools in this repository.
+
+The hook is included only in the Claude plugin installation. Agent Skills installations still support Claude's normal description-based automatic invocation, including the expanded end-to-end build triggers, but do not install the plugin hook.
+
 ### From the Agent Skills ecosystem
 
 ```bash
