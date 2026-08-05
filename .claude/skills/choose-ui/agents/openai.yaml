@@ -1,0 +1,4 @@
+interface:
+  display_name: "Choose UI"
+  short_description: "Choose the right UI pattern from intent and constraints"
+  default_prompt: "Use $choose-ui to choose and justify the best UI components for this product flow."

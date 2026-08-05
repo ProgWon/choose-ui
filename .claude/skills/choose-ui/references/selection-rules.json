@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "thresholds": {
+    "segmented_max": 4,
+    "radio_max": 6,
+    "visible_multi_max": 8,
+    "combobox_min": 12,
+    "tabs_max": 5
+  },
+  "required_states": [
+    "default",
+    "focus",
+    "selected",
+    "disabled",
+    "error",
+    "loading",
+    "empty",
+    "long-content"
+  ]
+}

@@ -1,0 +1,51 @@
+name: Propose or challenge a UI rule
+description: Add a product case that should change or refine a recommendation.
+title: "[Rule]: "
+labels:
+  - rule
+body:
+  - type: textarea
+    id: user-task
+    attributes:
+      label: User task
+      description: What is the user trying to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Decision-changing constraints
+      description: Include option range, selection mode, effect timing, comparison need, platform, and dynamic behavior.
+    validations:
+      required: true
+  - type: input
+    id: current
+    attributes:
+      label: Current recommendation
+    validations:
+      required: true
+  - type: input
+    id: expected
+    attributes:
+      label: Expected recommendation
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: User impact
+      description: Describe the failure, friction, confusion, or accessibility problem caused by the current recommendation.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Link primary design-system guidance, platform documentation, research, or a reproducible product case.
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution readiness
+      options:
+        - label: I can add or update an evaluation case.
+        - label: I can open a pull request with the rule change.
