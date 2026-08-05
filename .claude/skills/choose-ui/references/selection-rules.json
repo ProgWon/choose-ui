@@ -27,6 +27,7 @@
       "when": {
         "intent": ["input", "filter", "setting"],
         "value_kind": "selection",
+        "custom_value": false,
         "options": {"max": 0},
         "effective_options": {"min": 1}
       },
@@ -99,6 +100,22 @@
       "evidence": ["wcag"]
     },
     {
+      "id": "navigation-search",
+      "section": "Actions and navigation",
+      "when": {
+        "intent": "navigation",
+        "search": true,
+        "effective_options": {"min": 2}
+      },
+      "recommendation": "navigation command palette",
+      "confidence": "high",
+      "avoid": "Long unsearchable navigation list",
+      "reason": "Explicit destination search needs retrieval rather than scanning the full navigation set.",
+      "states": ["closed", "open", "query", "results", "current", "no-results", "error"],
+      "accessibility": "Use an accessible dialog and combobox pattern, preserve link semantics for results, and restore focus on close.",
+      "evidence": ["wai-apg", "wcag"]
+    },
+    {
       "id": "navigation-tabs",
       "section": "Actions and navigation",
       "when": {"intent": "navigation", "effective_options": {"min": 2, "max_ref": "tabs_max"}},
@@ -146,6 +163,59 @@
       "reason": "This independent yes/no answer is committed with the surrounding form.",
       "states": ["checked", "unchecked", "focus", "disabled", "error"],
       "accessibility": "Associate the label with the checkbox and keep the full label clickable.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "multiple-custom",
+      "section": "Custom values",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "value_kind": "selection",
+        "selection": "multiple",
+        "custom_value": true
+      },
+      "recommendation": "editable multi-select combobox with tokens",
+      "confidence": "high",
+      "avoid": "Checkbox group or closed multi-select",
+      "reason": "Users can add values outside the predefined set and must see each selected value.",
+      "states": ["closed", "open", "query", "results", "created", "selected", "no-results", "error"],
+      "accessibility": "Use an established editable-combobox pattern and announce value creation, results, selection, and token removal.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "single-custom-empty",
+      "section": "Custom values",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "value_kind": "selection",
+        "selection": "single",
+        "custom_value": true,
+        "effective_options": {"max": 0}
+      },
+      "recommendation": "text input",
+      "confidence": "high",
+      "avoid": "Empty select or combobox with no suggestions",
+      "reason": "No predefined value exists, but users can enter the value directly.",
+      "states": ["empty", "focus", "filled", "disabled", "error"],
+      "accessibility": "Use a persistent label, programmatic error association, and clear input requirements.",
+      "evidence": ["wcag"]
+    },
+    {
+      "id": "single-custom",
+      "section": "Custom values",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "value_kind": "selection",
+        "selection": "single",
+        "custom_value": true,
+        "effective_options": {"min": 1}
+      },
+      "recommendation": "editable combobox",
+      "confidence": "high",
+      "avoid": "Closed select or static value",
+      "reason": "Users can choose a suggestion or enter a value outside the predefined set.",
+      "states": ["closed", "open", "query", "results", "created", "selected", "no-results", "error"],
+      "accessibility": "Follow an established editable-combobox keyboard and announcement pattern.",
       "evidence": ["wai-apg"]
     },
     {
@@ -206,7 +276,7 @@
         "intent": ["input", "filter", "setting"],
         "selection": "multiple",
         "search": true,
-        "effective_options": {"min": 2}
+        "effective_options": {"min_exclusive_ref": "radio_default_max"}
       },
       "recommendation": "multi-select combobox",
       "confidence": "high",
@@ -217,20 +287,21 @@
       "evidence": ["wai-apg"]
     },
     {
-      "id": "single-custom",
-      "section": "Single selection",
+      "id": "multiple-search-small",
+      "section": "Multiple selection",
       "when": {
         "intent": ["input", "filter", "setting"],
-        "selection": "single",
-        "custom_value": true,
-        "effective_options": {"min": 2}
+        "selection": "multiple",
+        "search": true,
+        "effective_options": {"min": 2, "max_ref": "radio_default_max"}
       },
-      "recommendation": "editable combobox",
-      "confidence": "high",
-      "avoid": "Closed select",
-      "reason": "Users must enter a value outside the predefined set.",
+      "recommendation": "multi-select combobox",
+      "confidence": "medium",
+      "avoid": "Search added to a trivially scannable checklist without evidence",
+      "reason": "The structured request requires search, but the small set normally favors visible scanning.",
       "states": ["closed", "open", "query", "results", "selected", "no-results", "error"],
-      "accessibility": "Follow an established editable-combobox keyboard and announcement pattern.",
+      "accessibility": "Follow an established combobox pattern and announce results and token removal.",
+      "assumption": "Search solves a verified retrieval problem despite the short option set.",
       "evidence": ["wai-apg"]
     },
     {
@@ -240,7 +311,7 @@
         "intent": ["input", "filter", "setting"],
         "selection": "single",
         "search": true,
-        "effective_options": {"min": 2}
+        "effective_options": {"min_exclusive_ref": "radio_default_max"}
       },
       "recommendation": "combobox",
       "confidence": "high",
@@ -248,6 +319,24 @@
       "reason": "Explicit retrieval needs search or type-ahead.",
       "states": ["closed", "open", "query", "results", "selected", "no-results", "error"],
       "accessibility": "Follow an established combobox keyboard pattern and announce result changes.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "single-search-small",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "selection": "single",
+        "search": true,
+        "effective_options": {"min": 2, "max_ref": "radio_default_max"}
+      },
+      "recommendation": "combobox",
+      "confidence": "medium",
+      "avoid": "Search added to a trivially scannable choice set without evidence",
+      "reason": "The structured request requires search, but the small set normally favors visible scanning.",
+      "states": ["closed", "open", "query", "results", "selected", "no-results", "error"],
+      "accessibility": "Follow an established combobox keyboard pattern and announce result changes.",
+      "assumption": "Search solves a verified retrieval problem despite the short option set.",
       "evidence": ["wai-apg"]
     },
     {
@@ -334,6 +423,25 @@
       "states": ["closed", "open", "focus", "selected", "loading", "error"],
       "accessibility": "Expose checked menu items and return focus to the view trigger on close.",
       "evidence": ["seed-segmented", "wai-apg"]
+    },
+    {
+      "id": "filter-single-frequent-chips",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "filter",
+        "selection": "single",
+        "frequency": "high",
+        "rich_options": false,
+        "effective_options": {"min_exclusive_ref": "segmented_max", "max_ref": "visible_multi_max"}
+      },
+      "recommendation": "single-selection chips",
+      "confidence": "medium",
+      "avoid": "Closed select for a frequently changed short filter",
+      "reason": "The filter changes frequently and still fits as visible compact choices, but exceeds a comfortable segmented control.",
+      "states": ["default", "focus", "selected", "disabled", "overflow", "long-content"],
+      "accessibility": "Expose exactly one selected chip and support consistent keyboard operation without relying on color alone.",
+      "assumption": "Labels are short enough to remain distinguishable as chips.",
+      "evidence": ["seed-radio", "wcag"]
     },
     {
       "id": "filter-single-mobile",

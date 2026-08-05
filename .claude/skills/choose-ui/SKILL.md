@@ -35,6 +35,7 @@ Choose the smallest interaction that truthfully represents the user's task. Trea
 - Prefer visible options when comparison is important and the list is short enough to scan.
 - Use search only when recognition or retrieval is materially faster than scanning.
 - In structured input, an explicit search requirement takes precedence over compact visible filters. In a conversational review of a short set, verify that search solves a real retrieval problem before implementation.
+- When custom values are allowed, predefined option count does not limit user agency. Use direct text entry with no suggestions, an editable combobox for single values with suggestions, or tokenized editable multi-selection for multiple values.
 - Distinguish immediate settings from submitted answers. Use a switch for an immediate Boolean setting; use a checkbox for a submitted independent yes/no answer.
 - Do not preserve an unsuitable control merely for visual consistency. Preserve the design system's tokens and primitives while choosing the correct interaction pattern.
 - Account for loading, empty, error, disabled, selected, focus, and long-content states present in real data.

@@ -20,7 +20,7 @@ Rules are ordered: the first matching row wins. Numeric boundaries are defaults,
 
 | Rule | Match | Choose | Avoid | Why |
 | --- | --- | --- | --- | --- |
-| `selection-loading` | intent: input / filter / setting; value kind: selection; options ≤ 0; options at credible maximum ≥ 1 | loading selection region | Empty or disabled picker | The current empty set is unresolved; design for the credible option range. |
+| `selection-loading` | intent: input / filter / setting; value kind: selection; custom values: no; options ≤ 0; options at credible maximum ≥ 1 | loading selection region | Empty or disabled picker | The current empty set is unresolved; design for the credible option range. |
 | `boolean-immediate` | intent: input / setting; value kind: boolean; effect: immediate | switch | Radio group or select | This is an immediate on/off value whose state changes directly. |
 | `boolean-submit` | intent: input / setting; value kind: boolean; effect: submit | checkbox | Switch | This independent yes/no answer is committed with the surrounding form. |
 | `selection-none` | intent: input / filter / setting; value kind: selection; options at credible maximum ≤ 0 | empty state | Empty dropdown | There is nothing to select. |
@@ -36,14 +36,24 @@ Rules are ordered: the first matching row wins. Numeric boundaries are defaults,
 | `action-many` | intent: action; options at credible maximum ≥ 2 | action menu | Select or combobox | The user is choosing among commands, not entering a value. |
 | `navigation-none` | intent: navigation; options at credible maximum ≤ 0 | no navigation control | Empty tabs or navigation menu | No destination is available. |
 | `navigation-one` | intent: navigation; options at credible maximum ≥ 1 and ≤ 1 | direct link | One-item menu or tab strip | One destination needs a direct path, not a chooser. |
+| `navigation-search` | intent: navigation; search: yes; options at credible maximum ≥ 2 | navigation command palette | Long unsearchable navigation list | Explicit destination search needs retrieval rather than scanning the full navigation set. |
 | `navigation-tabs` | intent: navigation; options at credible maximum ≥ 2 and ≤ 5 (`tabs_max`) | tabs | Segmented control | A short set of peer sections can remain visible as navigation. |
 | `navigation-list` | intent: navigation; options at credible maximum > 5 (`tabs_max`) | navigation list | Overfilled tabs or form select | The destination count exceeds a compact tab set. |
+
+## Custom values
+
+| Rule | Match | Choose | Avoid | Why |
+| --- | --- | --- | --- | --- |
+| `multiple-custom` | intent: input / filter / setting; value kind: selection; selection: multiple; custom values: yes | editable multi-select combobox with tokens | Checkbox group or closed multi-select | Users can add values outside the predefined set and must see each selected value. |
+| `single-custom-empty` | intent: input / filter / setting; value kind: selection; selection: single; custom values: yes; options at credible maximum ≤ 0 | text input | Empty select or combobox with no suggestions | No predefined value exists, but users can enter the value directly. |
+| `single-custom` | intent: input / filter / setting; value kind: selection; selection: single; custom values: yes; options at credible maximum ≥ 1 | editable combobox | Closed select or static value | Users can choose a suggestion or enter a value outside the predefined set. |
 
 ## Multiple selection
 
 | Rule | Match | Choose | Avoid | Why |
 | --- | --- | --- | --- | --- |
-| `multiple-search` | intent: input / filter / setting; selection: multiple; search: yes; options at credible maximum ≥ 2 | multi-select combobox | Chips or unsearchable checklist | Explicit search needs retrieval before any compact visible-filter rule. |
+| `multiple-search` | intent: input / filter / setting; selection: multiple; search: yes; options at credible maximum > 4 (`radio_default_max`) | multi-select combobox | Chips or unsearchable checklist | Explicit search needs retrieval before any compact visible-filter rule. |
+| `multiple-search-small` | intent: input / filter / setting; selection: multiple; search: yes; options at credible maximum ≥ 2 and ≤ 4 (`radio_default_max`) | multi-select combobox | Search added to a trivially scannable checklist without evidence | The structured request requires search, but the small set normally favors visible scanning. |
 | `input-multiple-rich` | intent: input / setting; selection: multiple; rich option content: yes; options at credible maximum ≥ 2 and ≤ 8 (`visible_multi_max`) | checkbox cards | Closed multi-select | Descriptions must remain visible for comparing independent choices. |
 | `input-multiple-compare` | intent: input / setting; selection: multiple; comparison: high; options at credible maximum ≥ 2 and ≤ 8 (`visible_multi_max`) | checkbox comparison group | Closed multi-select | A comparable short set should remain visible while allowing independent choices. |
 | `input-multiple-visible` | intent: input / setting; selection: multiple; options at credible maximum ≥ 2 and ≤ 8 (`visible_multi_max`) | checkbox group | Multi-select | The full option set fits as visible independent choices. |
@@ -54,8 +64,8 @@ Rules are ordered: the first matching row wins. Numeric boundaries are defaults,
 
 | Rule | Match | Choose | Avoid | Why |
 | --- | --- | --- | --- | --- |
-| `single-custom` | intent: input / filter / setting; selection: single; custom values: yes; options at credible maximum ≥ 2 | editable combobox | Closed select | Users must enter a value outside the predefined set. |
-| `single-search` | intent: input / filter / setting; selection: single; search: yes; options at credible maximum ≥ 2 | combobox | Unsearchable select | Explicit retrieval needs search or type-ahead. |
+| `single-search` | intent: input / filter / setting; selection: single; search: yes; options at credible maximum > 4 (`radio_default_max`) | combobox | Unsearchable select | Explicit retrieval needs search or type-ahead. |
+| `single-search-small` | intent: input / filter / setting; selection: single; search: yes; options at credible maximum ≥ 2 and ≤ 4 (`radio_default_max`) | combobox | Search added to a trivially scannable choice set without evidence | The structured request requires search, but the small set normally favors visible scanning. |
 | `single-large` | intent: input / filter / setting; selection: single; options at credible maximum ≥ 12 (`combobox_min`) | combobox | Unsearchable long select | The option count makes retrieval faster than scanning. |
 | `input-single-mobile-rich` | intent: input / setting; selection: single; platform: mobile; rich option content: yes; options at credible maximum ≥ 6 (`mobile_sheet_min`) and < 12 (`combobox_min`) | input button opening a rich comparison sheet | Closed select | Rich option content needs a larger touch-friendly comparison surface. |
 | `input-single-mobile-compare` | intent: input / setting; selection: single; platform: mobile; comparison: high; options at credible maximum ≥ 6 (`mobile_sheet_min`) and < 12 (`combobox_min`) | input button opening a comparison sheet | Closed select | Detailed comparison needs more room than an inline control provides. |
@@ -77,6 +87,7 @@ Rules are ordered: the first matching row wins. Numeric boundaries are defaults,
 | `view-switch-short` | intent: view-switch; options at credible maximum ≥ 2 and ≤ 4 (`segmented_max`) | segmented control | Tabs | A short set of choices immediately changes the presentation of the same content. |
 | `view-switch-mobile-long` | intent: view-switch; platform: mobile; options at credible maximum > 4 (`segmented_max`) | button opening a view sheet | Overfilled segmented control or form select | The view count exceeds a compact segmented control on a touch surface. |
 | `view-switch-long` | intent: view-switch; platform: any / desktop; options at credible maximum > 4 (`segmented_max`) | view menu | Radio group or form select | The interaction remains a view-mode command even when the compact control no longer fits. |
+| `filter-single-frequent-chips` | intent: filter; selection: single; frequency: high; rich option content: no; options at credible maximum > 4 (`segmented_max`) and ≤ 8 (`visible_multi_max`) | single-selection chips | Closed select for a frequently changed short filter | The filter changes frequently and still fits as visible compact choices, but exceeds a comfortable segmented control. |
 | `filter-single-mobile` | intent: filter; selection: single; platform: mobile; options at credible maximum ≥ 6 (`mobile_sheet_min`) and < 12 (`combobox_min`) | button opening a selection sheet | Small desktop-style popup | The filter needs a touch-friendly scanning surface. |
 | `filter-single-frequent` | intent: filter; selection: single; frequency: high; options at credible maximum ≥ 2 and ≤ 4 (`segmented_max`) | segmented control | Closed select | A short, frequently changed filter benefits from visible immediate choices. |
 | `filter-single-compact` | intent: filter; selection: single; options at credible maximum ≥ 2 and < 12 (`combobox_min`) | select | Radio group for a low-frequency compact filter | One compact, low-frequency filter does not require visible comparison. |

@@ -29,6 +29,14 @@ python3 .claude/skills/choose-ui/scripts/rules_tool.py --check
 python3 -m unittest discover -s tests -v
 ```
 
+When changing skill activation or output instructions, run the authenticated live trigger suite locally:
+
+```bash
+python3 evals/run_skill_evals.py --suite trigger
+```
+
+Do not add live model calls to CI. Record model/version, repeat count, and raw JSON output when publishing activation-rate claims.
+
 Keep recommendations deterministic for the same structured input. If the correct choice depends on missing context, return medium or low confidence and state the assumption that matters.
 
 ## Extend the skill

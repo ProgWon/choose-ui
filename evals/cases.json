@@ -102,6 +102,31 @@
     "rule": "single-custom"
   },
   {
+    "name": "custom value with no predefined options",
+    "input": {"intent": "input", "options": 0, "custom_value": true},
+    "expected": "text input",
+    "rule": "single-custom-empty"
+  },
+  {
+    "name": "custom value with one suggestion",
+    "input": {"intent": "input", "options": 1, "custom_value": true},
+    "expected": "editable combobox",
+    "rule": "single-custom"
+  },
+  {
+    "name": "multiple custom tags",
+    "input": {"intent": "input", "options": 7, "selection": "multiple", "custom_value": true},
+    "expected": "editable multi-select combobox with tokens",
+    "rule": "multiple-custom"
+  },
+  {
+    "name": "short explicit search lowers confidence",
+    "input": {"intent": "input", "options": 2, "search": true},
+    "expected": "combobox",
+    "rule": "single-search-small",
+    "confidence": "medium"
+  },
+  {
     "name": "three views of one chart",
     "input": {"intent": "view-switch", "options": 3},
     "expected": "segmented control",
@@ -126,6 +151,12 @@
     "rule": "navigation-tabs"
   },
   {
+    "name": "searchable large navigation",
+    "input": {"intent": "navigation", "options": 30, "search": true},
+    "expected": "navigation command palette",
+    "rule": "navigation-search"
+  },
+  {
     "name": "single low-frequency filter",
     "input": {"intent": "filter", "options": 3, "selection": "single", "frequency": "low"},
     "expected": "select",
@@ -136,6 +167,12 @@
     "input": {"intent": "filter", "options": 3, "selection": "single", "frequency": "high"},
     "expected": "segmented control",
     "rule": "filter-single-frequent"
+  },
+  {
+    "name": "five high-frequency single filters",
+    "input": {"intent": "filter", "options": 5, "selection": "single", "frequency": "high"},
+    "expected": "single-selection chips",
+    "rule": "filter-single-frequent-chips"
   },
   {
     "name": "short frequent keyword filters",
