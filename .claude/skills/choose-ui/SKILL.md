@@ -1,6 +1,6 @@
 ---
 name: choose-ui
-description: Choose and justify UI components from user intent, option cardinality, interaction timing, comparison needs, platform constraints, and accessibility requirements. Use when designing or reviewing forms, filters, settings, navigation, menus, tabs, selection controls, dropdowns, radios, checkboxes, segmented controls, comboboxes, or sheet pickers; when asked which component or UX pattern fits; or when auditing mismatched controls. Do not use for visual-only styling or token changes, or implementation where the interaction pattern is already fixed.
+description: Select and justify a UI interaction pattern when the component type is unresolved. Use for explicit control comparisons, questions about which pattern fits an interaction, or behavioral UX audits where replacement is allowed. The request must require a choice among interaction patterns for selection, filtering, settings, navigation, or actions.
 ---
 
 # Choose UI
@@ -32,14 +32,16 @@ Choose the smallest interaction that truthfully represents the user's task. Trea
 - Do not render a selection control when there is no choice. For one fixed option, apply it automatically and show readable text when users need confirmation.
 - Do not use select, dropdown, or combobox patterns for commands. Use a button or action menu.
 - Do not use tabs or segmented controls for unrelated destinations. Use navigation.
+- Keep view switching in the view-command family. When the view count exceeds a segmented control, use a view menu or view sheet rather than a form select or combobox.
 - Prefer visible options when comparison is important and the list is short enough to scan.
-- Use search only when recognition or retrieval is materially faster than scanning.
-- In structured input, an explicit search requirement takes precedence over compact visible filters. In a conversational review of a short set, verify that search solves a real retrieval problem before implementation.
+- When search is not an explicit requirement, add it only when recognition or retrieval is materially faster than scanning.
+- If the user explicitly requires search, the recommendation must include a searchable pattern. Do not remove search merely because the current list is short. For a short set, lower confidence and verify the retrieval need as an assumption, but honor the stated requirement.
 - When custom values are allowed, predefined option count does not limit user agency. Use direct text entry with no suggestions, an editable combobox for single values with suggestions, or tokenized editable multi-selection for multiple values.
 - Distinguish immediate settings from submitted answers. Use a switch for an immediate Boolean setting; use a checkbox for a submitted independent yes/no answer.
 - Do not preserve an unsuitable control merely for visual consistency. Preserve the design system's tokens and primitives while choosing the correct interaction pattern.
 - Account for loading, empty, error, disabled, selected, focus, and long-content states present in real data.
 - Treat numeric thresholds as defaults, not laws. Override them when research, platform convention, content complexity, localization, or the product design system provides stronger evidence. State the override.
+- If the user's interaction intent is unknown and that missing intent could change the component family, confidence must be low, never medium or high.
 
 ## Deterministic Baseline
 
@@ -66,7 +68,7 @@ Recommendation: <component or pattern>
 Why: <intent and decisive constraint>
 ```
 
-Use the quick tier only when confidence is high. For implementation, audit, ambiguous, explicitly requested analysis, or decisions involving consent, money, permissions, destructive effects, account security, or hard-to-reverse outcomes, return:
+Use the quick tier only when confidence is high. It must contain exactly those two labeled lines, with no caveat, rejected alternative, follow-up question, or extra section. For implementation, audit, ambiguous, explicitly requested analysis, or decisions involving consent, money, permissions, destructive effects, account security, or hard-to-reverse outcomes, return:
 
 ```text
 Recommendation: <component or pattern>
@@ -75,11 +77,11 @@ Why: <intent and constraints that drove the choice>
 Avoid: <closest rejected alternative and why>
 Required states: <states the design or implementation must support>
 Accessibility: <keyboard, labeling, focus, and announcement requirements>
-Assumptions: <only consequential assumptions>
-Evidence: <relevant source or product-system guidance>
+Assumptions: <only consequential assumptions; write None when there are none>
+Evidence: <relevant source or product-system guidance; write None when none is available>
 ```
 
-Do not list multiple components without choosing one. When information is genuinely insufficient, select a provisional recommendation, lower confidence, and name the one missing fact that would change it.
+Every full response must include all eight labeled fields, including `Assumptions: None` or `Evidence: None` when applicable. Do not list multiple components without choosing one. When information is genuinely insufficient, select a provisional recommendation, lower confidence, and name the one missing fact that would change it. If the interaction intent itself is unknown, confidence is low because the missing intent can change the component family.
 
 ## Audit Mode
 

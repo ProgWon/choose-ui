@@ -4,7 +4,7 @@
   "trigger_cases": [
     {
       "name": "generic form review triggers",
-      "prompt": "이 회원가입 폼의 컴포넌트 선택이 사용자 목적에 맞는지 리뷰해줘.",
+      "prompt": "회원가입 폼에서 국가 선택, 약관 동의, 마케팅 알림 설정에 어떤 컴포넌트가 사용자 목적에 맞는지 리뷰해줘.",
       "should_trigger": true
     },
     {
@@ -38,7 +38,7 @@
       "name": "quick one-option answer",
       "prompt": "배송 옵션이 일반 배송 하나뿐이야. Select를 써야 해?",
       "expected_mode": "quick",
-      "recommendation_terms": ["static value", "정적 값"],
+      "recommendation_terms": ["static value", "정적 값", "고정 표시", "고정 텍스트", "텍스트 표시", "텍스트로 표시", "읽기 전용 텍스트", "fixed text", "read-only text"],
       "semantic_checks": ["Chooses one pattern rather than listing alternatives", "Explains that one fixed option creates no meaningful choice"]
     },
     {
@@ -54,7 +54,8 @@
       "prompt": "모바일 상품 목록에 6개의 다중 선택 필터가 있고 자주 바꾸지만, 사용자는 필터명을 검색해야 해. 전체 판단 기록으로 답해줘.",
       "expected_mode": "full",
       "recommendation_terms": ["multi-select combobox", "다중 선택 콤보박스"],
-      "confidence_terms": ["high", "높음"],
+      "recommendation_term_groups": [["search", "검색"], ["multiple", "다중"], ["combobox", "콤보박스", "list", "리스트", "checkbox", "체크박스"]],
+      "confidence_terms": ["high", "높음", "medium", "중간"],
       "semantic_checks": ["Treats explicit search as stronger than the compact chip rule"]
     },
     {
@@ -66,7 +67,7 @@
     },
     {
       "name": "ambiguous context lowers confidence",
-      "prompt": "옵션이 5개인 컨트롤이 필요해. 어떤 걸 써야 해?",
+      "prompt": "용도가 폼 입력인지 필터인지 뷰 전환인지 아직 정해지지 않았고, 옵션이 5개라는 것만 알아. 어떤 컨트롤을 써야 해?",
       "expected_mode": "full",
       "confidence_terms": ["low", "낮음"],
       "semantic_checks": ["Names intent as the missing fact that could change the component family"]
@@ -74,6 +75,7 @@
     {
       "name": "project component inventory adapts names",
       "prompt": "이 저장소는 SEED를 쓰고 있어. 설명이 긴 요금제 4개 중 하나를 제출 전에 고르게 할 때 실제 SEED 컴포넌트 이름으로 추천해줘.",
+      "tools": ["Skill", "Read", "Grep", "Glob"],
       "expected_mode": "full",
       "recommendation_terms": ["Select Box", "셀렉트 박스"],
       "semantic_checks": ["Specifies the Radio control and does not invent package APIs"]
