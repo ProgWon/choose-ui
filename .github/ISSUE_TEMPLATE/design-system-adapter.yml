@@ -1,0 +1,35 @@
+name: Add a design-system adapter
+description: Map Choose UI recommendations to a real product design system.
+title: "[Adapter]: "
+labels:
+  - adapter
+body:
+  - type: input
+    id: system
+    attributes:
+      label: Design system
+      description: Name and link the design system or component library.
+      placeholder: Material 3, shadcn/ui, Radix, Ant Design, Carbon...
+    validations:
+      required: true
+  - type: textarea
+    id: inventory
+    attributes:
+      label: Component inventory
+      description: Map Choose UI's generic interaction patterns to the system's real component names and primary documentation.
+    validations:
+      required: true
+  - type: textarea
+    id: mismatches
+    attributes:
+      label: Naming or behavior mismatches
+      description: Explain where the design system does not map one-to-one to the generic recommendation.
+    validations:
+      required: true
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution readiness
+      options:
+        - label: I can add the adapter reference and at least one evaluation case.
+        - label: I can open a pull request for this adapter.
