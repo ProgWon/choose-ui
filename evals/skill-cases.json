@@ -18,6 +18,16 @@
       "should_trigger": true
     },
     {
+      "name": "broad Korean service build triggers",
+      "prompt": "반려동물 돌봄 예약 서비스를 처음부터 개발해줘.",
+      "should_trigger": true
+    },
+    {
+      "name": "broad English app build triggers",
+      "prompt": "Build a subscription management SaaS from scratch.",
+      "should_trigger": true
+    },
+    {
       "name": "visual styling does not trigger",
       "prompt": "이미 정해진 PrimaryButton의 배경색을 brand-600 토큰으로 바꿔줘.",
       "should_trigger": false
@@ -30,6 +40,11 @@
     {
       "name": "fixed implementation does not trigger",
       "prompt": "설계서에 확정된 RadioGroup을 React로 구현해줘. 패턴 재검토는 필요 없어.",
+      "should_trigger": false
+    },
+    {
+      "name": "backend only service does not trigger",
+      "prompt": "결제 서비스의 백엔드 API만 구현해줘. 사용자 인터페이스는 범위 밖이야.",
       "should_trigger": false
     }
   ],

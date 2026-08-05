@@ -8,8 +8,8 @@
     {
       "name": "choose-ui",
       "source": "./",
-      "description": "Choose and justify UI interaction patterns from user intent, constraints, accessibility, and product context.",
-      "version": "1.0.0",
+      "description": "Automatically apply intent-based UI component decisions while building or reviewing product interfaces.",
+      "version": "1.1.0",
       "author": {
         "name": "ProgWon"
       },
