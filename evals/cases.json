@@ -2,86 +2,175 @@
   {
     "name": "no inventory choices",
     "input": {"intent": "input", "options": 0},
-    "expected": "empty state"
+    "expected": "empty state",
+    "rule": "selection-none"
+  },
+  {
+    "name": "unresolved inventory uses credible maximum",
+    "input": {"intent": "input", "options": 0, "expected_max_options": 5},
+    "expected": "loading selection region",
+    "rule": "selection-loading"
   },
   {
     "name": "one fixed shipping method",
     "input": {"intent": "input", "options": 1},
-    "expected": "static value"
+    "expected": "static value",
+    "rule": "selection-one-single"
   },
   {
     "name": "one immediate notification setting",
-    "input": {"intent": "setting", "options": 1, "effect": "immediate"},
-    "expected": "switch"
+    "input": {"intent": "setting", "options": 1, "value_kind": "boolean", "effect": "immediate"},
+    "expected": "switch",
+    "rule": "boolean-immediate"
   },
   {
     "name": "one submitted marketing opt-in",
-    "input": {"intent": "input", "options": 1, "selection": "multiple"},
-    "expected": "checkbox"
+    "input": {"intent": "input", "options": 1, "value_kind": "boolean", "effect": "submit"},
+    "expected": "checkbox",
+    "rule": "boolean-submit"
+  },
+  {
+    "name": "submitted Boolean setting can be inferred",
+    "input": {"intent": "setting", "options": 1, "effect": "submit"},
+    "expected": "checkbox",
+    "rule": "boolean-submit"
   },
   {
     "name": "three submitted choices",
     "input": {"intent": "input", "options": 3},
-    "expected": "radio group"
+    "expected": "radio group",
+    "rule": "input-single-short"
+  },
+  {
+    "name": "five simple desktop values",
+    "input": {"intent": "input", "options": 5, "platform": "desktop"},
+    "expected": "select",
+    "rule": "input-single-compact"
+  },
+  {
+    "name": "six mobile values",
+    "input": {"intent": "input", "options": 6, "platform": "mobile"},
+    "expected": "input button opening a selection sheet",
+    "rule": "input-single-mobile"
+  },
+  {
+    "name": "credible growth changes the component",
+    "input": {"intent": "input", "options": 3, "expected_max_options": 9, "platform": "mobile"},
+    "expected": "input button opening a selection sheet",
+    "rule": "input-single-mobile"
   },
   {
     "name": "four rich delivery options",
     "input": {"intent": "input", "options": 4, "comparison": "high", "rich_options": true},
-    "expected": "radio cards"
+    "expected": "radio cards",
+    "rule": "input-single-rich"
   },
   {
-    "name": "three views of one chart",
-    "input": {"intent": "view-switch", "options": 3, "effect": "immediate"},
-    "expected": "segmented control"
+    "name": "seven detailed desktop plans",
+    "input": {"intent": "input", "options": 7, "comparison": "high", "platform": "desktop"},
+    "expected": "comparison list with radio selection",
+    "rule": "input-single-comparison-list"
   },
   {
-    "name": "four peer account sections",
-    "input": {"intent": "navigation", "options": 4},
-    "expected": "tabs"
+    "name": "seven rich mobile plans",
+    "input": {"intent": "input", "options": 7, "rich_options": true, "platform": "mobile"},
+    "expected": "input button opening a rich comparison sheet",
+    "rule": "input-single-mobile-rich"
   },
   {
-    "name": "nine simple desktop values",
-    "input": {"intent": "input", "options": 9, "platform": "desktop"},
-    "expected": "select"
+    "name": "five rich mobile plans stay visible",
+    "input": {"intent": "input", "options": 5, "rich_options": true, "platform": "mobile"},
+    "expected": "radio cards",
+    "rule": "input-single-mobile-rich-visible"
   },
   {
-    "name": "nine mobile values",
-    "input": {"intent": "input", "options": 9, "platform": "mobile"},
-    "expected": "input button opening a selection sheet"
+    "name": "six rich mobile plans cross cleanly to a sheet",
+    "input": {"intent": "input", "options": 6, "rich_options": true, "platform": "mobile"},
+    "expected": "input button opening a rich comparison sheet",
+    "rule": "input-single-mobile-rich"
   },
   {
     "name": "searchable country list",
     "input": {"intent": "input", "options": 195, "search": true},
-    "expected": "combobox"
+    "expected": "combobox",
+    "rule": "single-search"
   },
   {
     "name": "custom tag value",
     "input": {"intent": "input", "options": 7, "custom_value": true},
-    "expected": "combobox"
+    "expected": "editable combobox",
+    "rule": "single-custom"
   },
   {
-    "name": "five lightweight filters",
-    "input": {"intent": "filter", "options": 5, "selection": "multiple"},
-    "expected": "selection chips"
+    "name": "three views of one chart",
+    "input": {"intent": "view-switch", "options": 3},
+    "expected": "segmented control",
+    "rule": "view-switch-short"
+  },
+  {
+    "name": "six desktop views do not become form input",
+    "input": {"intent": "view-switch", "options": 6, "platform": "desktop"},
+    "expected": "view menu",
+    "rule": "view-switch-long"
+  },
+  {
+    "name": "six mobile views use a view sheet",
+    "input": {"intent": "view-switch", "options": 6, "platform": "mobile"},
+    "expected": "button opening a view sheet",
+    "rule": "view-switch-mobile-long"
+  },
+  {
+    "name": "four peer account sections",
+    "input": {"intent": "navigation", "options": 4},
+    "expected": "tabs",
+    "rule": "navigation-tabs"
+  },
+  {
+    "name": "single low-frequency filter",
+    "input": {"intent": "filter", "options": 3, "selection": "single", "frequency": "low"},
+    "expected": "select",
+    "rule": "filter-single-compact"
+  },
+  {
+    "name": "single high-frequency filter",
+    "input": {"intent": "filter", "options": 3, "selection": "single", "frequency": "high"},
+    "expected": "segmented control",
+    "rule": "filter-single-frequent"
+  },
+  {
+    "name": "short frequent keyword filters",
+    "input": {"intent": "filter", "options": 5, "selection": "multiple", "frequency": "high"},
+    "expected": "selection chips",
+    "rule": "filter-multiple-frequent"
+  },
+  {
+    "name": "search overrides short filter chips",
+    "input": {"intent": "filter", "options": 6, "selection": "multiple", "frequency": "high", "search": true},
+    "expected": "multi-select combobox",
+    "rule": "multiple-search"
+  },
+  {
+    "name": "multiple comparison is not ignored",
+    "input": {"intent": "input", "options": 5, "selection": "multiple", "comparison": "high"},
+    "expected": "checkbox comparison group",
+    "rule": "input-multiple-compare"
   },
   {
     "name": "twenty searchable assignees",
     "input": {"intent": "input", "options": 20, "selection": "multiple", "search": true},
-    "expected": "multi-select combobox"
+    "expected": "multi-select combobox",
+    "rule": "multiple-search"
   },
   {
     "name": "one command",
     "input": {"intent": "action", "options": 1},
-    "expected": "button"
-  },
-  {
-    "name": "no permitted command",
-    "input": {"intent": "action", "options": 0},
-    "expected": "no action trigger"
+    "expected": "button",
+    "rule": "action-one"
   },
   {
     "name": "five commands",
     "input": {"intent": "action", "options": 5},
-    "expected": "action menu"
+    "expected": "action menu",
+    "rule": "action-many"
   }
 ]

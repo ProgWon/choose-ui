@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "description": "Model-level cases for testing activation, output discipline, and judgment. Run each prompt in a fresh Claude session with and without the skill.",
+  "trigger_cases": [
+    {
+      "name": "generic form review triggers",
+      "prompt": "이 회원가입 폼의 컴포넌트 선택이 사용자 목적에 맞는지 리뷰해줘.",
+      "should_trigger": true
+    },
+    {
+      "name": "component choice triggers",
+      "prompt": "배송 방법이 하나뿐인데 드롭다운을 유지해야 할까?",
+      "should_trigger": true
+    },
+    {
+      "name": "filter audit triggers",
+      "prompt": "검색 필터 6개를 칩으로 만들었어. 검색도 필요한데 UX 패턴을 점검해줘.",
+      "should_trigger": true
+    },
+    {
+      "name": "visual styling does not trigger",
+      "prompt": "이미 정해진 PrimaryButton의 배경색을 brand-600 토큰으로 바꿔줘.",
+      "should_trigger": false
+    },
+    {
+      "name": "token rename does not trigger",
+      "prompt": "spacing-medium 토큰 이름을 spacing-4로 일괄 변경해줘.",
+      "should_trigger": false
+    },
+    {
+      "name": "fixed implementation does not trigger",
+      "prompt": "설계서에 확정된 RadioGroup을 React로 구현해줘. 패턴 재검토는 필요 없어.",
+      "should_trigger": false
+    }
+  ],
+  "behavior_cases": [
+    {
+      "name": "quick one-option answer",
+      "prompt": "배송 옵션이 일반 배송 하나뿐이야. Select를 써야 해?",
+      "expected_mode": "quick",
+      "expected_recommendation": "static value",
+      "must_include": ["Recommendation", "Why"],
+      "must_not_include": ["disabled dropdown", "여러 대안"]
+    },
+    {
+      "name": "submitted Boolean answer",
+      "prompt": "가입 폼에서 '마케팅 알림에 동의합니다'는 저장 버튼을 눌러야 제출돼. 어떤 컨트롤이어야 해?",
+      "expected_mode": "quick",
+      "expected_recommendation": "checkbox",
+      "must_include": ["submit"],
+      "must_not_include": ["switch"]
+    },
+    {
+      "name": "search wins over chips",
+      "prompt": "모바일 상품 목록에 6개의 다중 선택 필터가 있고 자주 바꾸지만, 사용자는 필터명을 검색해야 해. 전체 판단 기록으로 답해줘.",
+      "expected_mode": "full",
+      "expected_recommendation": "multi-select combobox",
+      "expected_confidence": "high",
+      "must_include": ["Confidence", "Avoid", "Required states", "Accessibility", "Assumptions", "Evidence"]
+    },
+    {
+      "name": "large view switch stays a view command",
+      "prompt": "같은 차트를 보는 방식이 9개야. 데스크톱에서 Select로 바꾸면 될까? 전체 판단 기록을 줘.",
+      "expected_mode": "full",
+      "expected_recommendation": "view menu",
+      "must_not_include": ["radio group", "form select"]
+    },
+    {
+      "name": "ambiguous context lowers confidence",
+      "prompt": "옵션이 5개인 컨트롤이 필요해. 어떤 걸 써야 해?",
+      "expected_mode": "full",
+      "expected_confidence": "low",
+      "must_include": ["intent", "missing"]
+    },
+    {
+      "name": "project component inventory adapts names",
+      "prompt": "이 저장소는 SEED를 쓰고 있어. 설명이 긴 요금제 4개 중 하나를 제출 전에 고르게 할 때 실제 SEED 컴포넌트 이름으로 추천해줘.",
+      "expected_mode": "full",
+      "expected_recommendation": "Select Box",
+      "must_include": ["Radio", "SEED"]
+    }
+  ]
+}

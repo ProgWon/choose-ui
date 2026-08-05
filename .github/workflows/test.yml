@@ -16,4 +16,5 @@ jobs:
         with:
           python-version: "3.11"
       - run: python3 -m unittest discover -s tests -v
-      - run: python3 .claude/skills/choose-ui/scripts/recommend.py --intent input --options 4 --comparison high
+      - run: python3 .claude/skills/choose-ui/scripts/rules_tool.py --check
+      - run: python3 .claude/skills/choose-ui/scripts/recommend.py --intent input --options 5 --platform desktop

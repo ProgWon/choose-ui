@@ -19,11 +19,13 @@ Avoid copying source text. Paraphrase the principle and link to the original.
 ## Change the decision engine
 
 1. Add a failing scenario to `evals/cases.json`.
-2. Update `.claude/skills/choose-ui/scripts/recommend.py` or its thresholds.
-3. Update the relevant reference file when the human-readable guidance changes.
-4. Run the complete test suite.
+2. Update the canonical `.claude/skills/choose-ui/references/selection-rules.json` rule or threshold.
+3. Regenerate the human-readable matrix; do not edit it by hand.
+4. Run the rule check and complete test suite.
 
 ```bash
+python3 .claude/skills/choose-ui/scripts/rules_tool.py --write
+python3 .claude/skills/choose-ui/scripts/rules_tool.py --check
 python3 -m unittest discover -s tests -v
 ```
 
@@ -38,6 +40,7 @@ Keep `SKILL.md` concise and route detailed guidance to one-level-deep reference 
 - The change solves a concrete user problem.
 - At least one evaluation case covers the change.
 - Existing evaluations still pass or their changed expectation is justified.
+- The generated matrix matches the canonical rulebook.
 - Accessibility behavior is specified for a new custom interaction.
 - Sources are primary and linked.
 - No source documentation is copied wholesale.

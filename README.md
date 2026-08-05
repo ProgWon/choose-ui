@@ -1,8 +1,13 @@
 # Choose UI
 
-**Stop guessing UI components. Choose them from user intent, constraints, and evidence.**
+[![Tests](https://github.com/ProgWon/choose-ui/actions/workflows/test.yml/badge.svg)](https://github.com/ProgWon/choose-ui/actions/workflows/test.yml)
+[![MIT License](https://img.shields.io/badge/license-MIT-17213A.svg)](LICENSE)
 
-Choose UI is a Claude skill that decides which interaction pattern fits a product flow, explains why, rejects the closest wrong alternative, and names the states and accessibility behavior the implementation needs.
+**Stop guessing UI components. Choose them from user intent, real constraints, and evidence.**
+
+Choose UI is a Claude skill that decides which interaction pattern fits a product flow, explains why, rejects the closest wrong alternative, and names the states and accessibility behavior an implementation needs.
+
+![A one-option dropdown before and after Choose UI](assets/one-option-before-after.svg)
 
 It starts with a deliberately sharp rule:
 
@@ -10,24 +15,26 @@ It starts with a deliberately sharp rule:
 
 The useful part is everything around that rule: actions are not selections, navigation is not a segmented control, short comparable choices should not be hidden, and a mobile picker is not merely a smaller desktop dropdown.
 
+![Intent mismatches before and after Choose UI](assets/intent-before-after.svg)
+
 ## Why this exists
 
 AI can produce polished interfaces while choosing the wrong interaction model. Design systems document good components, but product teams still have to decide which component represents the user's actual task.
 
 Choose UI turns that decision into a repeatable workflow:
 
-1. Classify the intent: input, filter, view switch, action, navigation, or setting.
-2. Evaluate option count, growth, comparison need, effect timing, platform, and accessibility.
-3. Choose one pattern and state the evidence.
-4. Include the real states: loading, empty, error, disabled, focus, selection, and long content.
+1. Classify intent: input, filter, view switch, action, navigation, or setting.
+2. Evaluate current and credible option count, value kind, comparison need, frequency, effect timing, platform, and accessibility.
+3. Inspect the project's component inventory and translate the generic pattern into its real design-system name.
+4. Choose one pattern, reject the closest mismatch, and include production states.
 
 ```mermaid
 flowchart LR
   A["User intent"] --> B["Real data constraints"]
-  B --> C["Component decision"]
-  C --> D["Rejected alternative"]
-  C --> E["States and accessibility"]
-  C --> F["Evidence and assumptions"]
+  B --> C["Canonical rule baseline"]
+  C --> D["Product design-system adapter"]
+  D --> E["One justified decision"]
+  E --> F["States and accessibility"]
 ```
 
 ## Example
@@ -39,18 +46,22 @@ Use choose-ui to review this checkout form. The shipping-method dropdown
 currently has one available option, and the value is submitted with the order.
 ```
 
-Expected decision:
+For a narrow question, the skill stays brief:
 
 ```text
 Recommendation: static value
-Confidence: high
 Why: One fixed option creates no meaningful user choice.
-Avoid: A disabled or one-item dropdown falsely implies choice.
-Required states: loading, resolved, unavailable, long-content
-Accessibility: Present the value as readable text and include it in submitted data programmatically.
 ```
 
+For implementation, audits, or ambiguous decisions, it returns the full record: confidence, rejected alternative, required states, accessibility, assumptions, and evidence.
+
 ## Install for Claude Code
+
+### From the Agent Skills ecosystem
+
+```bash
+npx skills add progwon/choose-ui@choose-ui
+```
 
 ### Project skill
 
@@ -60,52 +71,70 @@ Copy `.claude/skills/choose-ui` into the same path in your project:
 cp -R .claude/skills/choose-ui /path/to/your-project/.claude/skills/
 ```
 
-### From the Agent Skills ecosystem
+Claude discovers the skill from its name and description. Invoke `choose-ui` explicitly when you want a visible decision record.
 
-```bash
-npx skills add progwon/choose-ui@choose-ui
-```
-
-Claude discovers the skill from its name and description. Invoke it explicitly with `choose-ui` when you want a visible decision record.
+The optional [`agents/openai.yaml`](.claude/skills/choose-ui/agents/openai.yaml) is bonus metadata for Codex and other Agent Skills clients. Claude ignores it; the Claude skill itself is fully defined by `SKILL.md` and its bundled resources.
 
 ## Deterministic baseline
 
-The skill includes a zero-dependency Python recommender for structured prompts, CI checks, and bulk audits:
+The skill includes a zero-dependency Python rule interpreter for structured prompts, CI checks, and bulk audits:
 
 ```bash
 python3 .claude/skills/choose-ui/scripts/recommend.py \
   --intent input \
-  --options 4 \
+  --options 3 \
+  --expected-max-options 9 \
   --selection single \
-  --comparison high \
   --platform mobile
 ```
 
-JSON output is available for automation:
+Use explicit semantics for a Boolean answer:
 
 ```bash
 python3 .claude/skills/choose-ui/scripts/recommend.py \
-  --intent filter \
-  --options 14 \
-  --selection multiple \
-  --search \
-  --format json
+  --intent setting \
+  --options 1 \
+  --value-kind boolean \
+  --effect submit
 ```
 
-The script is a baseline, not a replacement for product judgment. The skill tells Claude when direct research, content complexity, localization, or an established design system should override a threshold.
+JSON input and `--format json` are available for automation. Other decision flags include `--frequency`, `--comparison`, `--search`, `--custom-value`, and `--rich-options`.
+
+The interpreter performs ordered table lookup; it does not attempt to replace product judgment. Claude handles research, content complexity, localization, and justified design-system overrides.
+
+## One source of truth
+
+[`selection-rules.json`](.claude/skills/choose-ui/references/selection-rules.json) is the canonical ordered rulebook. Both the recommender and the human-readable matrix derive from it.
+
+```text
+selection-rules.json
+├── scripts/rule_engine.py        # generic first-match interpreter
+├── references/selection-controls.md  # generated human reference
+└── scripts/rules_tool.py         # schema/source/staleness checks
+```
+
+After changing a rule, regenerate and verify the matrix:
+
+```bash
+python3 .claude/skills/choose-ui/scripts/rules_tool.py --write
+python3 .claude/skills/choose-ui/scripts/rules_tool.py --check
+```
+
+This prevents the documentation and executable baseline from silently recommending different controls.
 
 ## Current coverage
 
-- Static values and empty states
-- Buttons and action menus
-- Links, tabs, and navigation lists
-- Checkboxes, radios, and radio cards
+- Empty, loading, and one-option states
+- Boolean switches and submitted checkboxes
+- Buttons, action menus, links, tabs, and navigation lists
+- Radios, radio cards, checkboxes, and comparison groups
 - Segmented controls and selection chips
-- Selects and comboboxes
-- Mobile sheets and large selection surfaces
-- Single and multiple selection
+- Selects, editable and multi-select comboboxes
+- Mobile view, radio, and checkbox sheets
+- Credible option growth rather than fixture-only cardinality
+- Existing design-system inventory and SEED component mapping
 - Accessibility and required UI states
-- Audit severity and replacement guidance
+- Quick answers and full audit records
 
 ## Principles
 
@@ -114,7 +143,7 @@ The script is a baseline, not a replacement for product judgment. The skill tell
 - Keep choices visible when comparison matters.
 - Add search only when it reduces retrieval cost.
 - Design for credible production data, not fixture data.
-- Prefer native semantics before custom widgets.
+- Prefer existing product components and native semantics.
 - Explain overrides instead of pretending thresholds are universal laws.
 
 ## Evidence
@@ -125,17 +154,17 @@ The wording and decision framework are original. Sources are paraphrased and lin
 
 ## Evaluate it
 
-Run the public scenario suite:
+Run the public regression suite:
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-The cases live in [`evals/cases.json`](evals/cases.json). They are intentionally readable so designers and engineers can disagree with a rule, add evidence, and submit a better case.
+[`evals/cases.json`](evals/cases.json) covers deterministic boundary decisions. [`evals/skill-cases.json`](evals/skill-cases.json) covers skill activation, non-activation, output discipline, ambiguous judgment, and design-system adaptation in fresh Claude sessions.
 
 ## Contributing
 
-The best contribution is a concrete product situation where the current recommendation is wrong or underspecified. Include the user intent, constraints, expected pattern, and a primary source or research finding when possible.
+The best contribution is a concrete product situation where the current recommendation is wrong or underspecified. Include user intent, constraints, expected pattern, and a primary source or research finding when possible.
 
 Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request. New design-system adapters, platform conventions, evaluation cases, and accessibility corrections are welcome.
 
