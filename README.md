@@ -67,15 +67,15 @@ Inside Claude Code, add this repository as a marketplace and install the plugin:
 
 ```text
 /plugin marketplace add ProgWon/choose-ui
-/plugin install choose-ui@progwon-skills
+/plugin install choose-ui@ui-ux-skills
 /reload-plugins
 ```
 
 The installed skill is available as `/choose-ui:choose-ui`, and Claude can also invoke it automatically when the request matches its description. Update it later with:
 
 ```text
-/plugin marketplace update progwon-skills
-/plugin update choose-ui@progwon-skills
+/plugin marketplace update ui-ux-skills
+/plugin update choose-ui@ui-ux-skills
 ```
 
 ### From the Agent Skills ecosystem
