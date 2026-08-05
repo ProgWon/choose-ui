@@ -1,0 +1,36 @@
+{
+  "name": "progwon-skills",
+  "description": "Practical Claude Code skills for product and interaction design decisions.",
+  "owner": {
+    "name": "ProgWon"
+  },
+  "plugins": [
+    {
+      "name": "choose-ui",
+      "source": "./",
+      "description": "Choose and justify UI interaction patterns from user intent, constraints, accessibility, and product context.",
+      "version": "1.0.0",
+      "author": {
+        "name": "ProgWon"
+      },
+      "homepage": "https://github.com/ProgWon/choose-ui",
+      "repository": "https://github.com/ProgWon/choose-ui",
+      "license": "MIT",
+      "keywords": [
+        "claude-code",
+        "claude-code-skills",
+        "design-system",
+        "ui",
+        "ux"
+      ],
+      "category": "Design & UX",
+      "tags": [
+        "components",
+        "accessibility",
+        "forms",
+        "interaction-design"
+      ],
+      "strict": true
+    }
+  ]
+}

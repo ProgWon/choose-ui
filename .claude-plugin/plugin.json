@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "choose-ui",
+  "displayName": "Choose UI",
+  "version": "1.0.0",
+  "description": "Choose and justify UI interaction patterns from user intent, constraints, accessibility, and product context.",
+  "author": {
+    "name": "ProgWon",
+    "url": "https://github.com/ProgWon"
+  },
+  "homepage": "https://github.com/ProgWon/choose-ui",
+  "repository": "https://github.com/ProgWon/choose-ui",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "claude-code-skills",
+    "design-system",
+    "ui",
+    "ux"
+  ],
+  "skills": "./.claude/skills/"
+}

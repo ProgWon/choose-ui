@@ -1,3 +1,4 @@
+import json
 import re
 import unittest
 from pathlib import Path
@@ -5,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_DIR = ROOT / ".claude" / "skills" / "choose-ui"
+PLUGIN_DIR = ROOT / ".claude-plugin"
 SKILL_FILE = SKILL_DIR / "SKILL.md"
 
 
@@ -32,6 +34,25 @@ class SkillStructure(unittest.TestCase):
     def test_skill_is_concise_and_finished(self):
         self.assertLess(len(self.content.splitlines()), 500)
         self.assertNotIn("TODO", self.content)
+
+    def test_claude_plugin_uses_canonical_skill_directory(self):
+        manifest = json.loads((PLUGIN_DIR / "plugin.json").read_text(encoding="utf-8"))
+        self.assertEqual("choose-ui", manifest["name"])
+        self.assertEqual("./.claude/skills/", manifest["skills"])
+        self.assertEqual("https://github.com/ProgWon/choose-ui", manifest["repository"])
+
+    def test_claude_marketplace_installs_root_plugin(self):
+        marketplace = json.loads((PLUGIN_DIR / "marketplace.json").read_text(encoding="utf-8"))
+        self.assertEqual("progwon-skills", marketplace["name"])
+        plugin = marketplace["plugins"][0]
+        self.assertEqual("choose-ui", plugin["name"])
+        self.assertEqual("./", plugin["source"])
+        self.assertTrue(plugin["strict"])
+
+    def test_readme_documents_marketplace_install(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("/plugin marketplace add ProgWon/choose-ui", readme)
+        self.assertIn("/plugin install choose-ui@progwon-skills", readme)
 
     def test_referenced_files_exist(self):
         links = re.findall(r"\]\((references/[^)]+)\)", self.content)
