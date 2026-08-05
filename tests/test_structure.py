@@ -43,7 +43,7 @@ class SkillStructure(unittest.TestCase):
 
     def test_claude_marketplace_installs_root_plugin(self):
         marketplace = json.loads((PLUGIN_DIR / "marketplace.json").read_text(encoding="utf-8"))
-        self.assertEqual("progwon-skills", marketplace["name"])
+        self.assertEqual("ui-ux-skills", marketplace["name"])
         plugin = marketplace["plugins"][0]
         self.assertEqual("choose-ui", plugin["name"])
         self.assertEqual("./", plugin["source"])
@@ -52,7 +52,7 @@ class SkillStructure(unittest.TestCase):
     def test_readme_documents_marketplace_install(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("/plugin marketplace add ProgWon/choose-ui", readme)
-        self.assertIn("/plugin install choose-ui@progwon-skills", readme)
+        self.assertIn("/plugin install choose-ui@ui-ux-skills", readme)
 
     def test_referenced_files_exist(self):
         links = re.findall(r"\]\((references/[^)]+)\)", self.content)
