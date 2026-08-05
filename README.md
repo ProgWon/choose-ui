@@ -61,6 +61,23 @@ For implementation, audits, or ambiguous decisions, it returns the full record: 
 
 ## Install for Claude Code
 
+### Claude Plugin Marketplace (recommended)
+
+Inside Claude Code, add this repository as a marketplace and install the plugin:
+
+```text
+/plugin marketplace add ProgWon/choose-ui
+/plugin install choose-ui@progwon-skills
+/reload-plugins
+```
+
+The installed skill is available as `/choose-ui:choose-ui`, and Claude can also invoke it automatically when the request matches its description. Update it later with:
+
+```text
+/plugin marketplace update progwon-skills
+/plugin update choose-ui@progwon-skills
+```
+
 ### From the Agent Skills ecosystem
 
 ```bash
