@@ -7,15 +7,21 @@
 
 Choose UI is a Claude skill that decides which interaction pattern fits a product flow, explains why, rejects the closest wrong alternative, and names the states and accessibility behavior an implementation needs.
 
-![A one-option dropdown before and after Choose UI](assets/one-option-before-after.svg)
+![The same live Claude Code prompt without and with Choose UI](assets/live-prompt-comparison.svg)
 
-_Illustrative UI mockup—not the output of a live prompt benchmark._
+_Exact excerpts from two fresh Claude Code runs with the same prompt and model. [Read the prompt, run conditions, and unedited outputs.](examples/live-comparison.md)_
+
+In the baseline run, Claude recommended preserving a single radio button for future consistency. With Choose UI loaded, Claude instead recognized that one available value is not a choice and recommended readable confirmation text backed by a submitted value.
 
 It starts with a deliberately sharp rule:
 
 > If there is only one available option, do not render a dropdown. Apply the value and present it as readable text.
 
 The useful part is everything around that rule: actions are not selections, navigation is not a segmented control, short comparable choices should not be hidden, and a mobile picker is not merely a smaller desktop dropdown.
+
+![A one-option dropdown before and after Choose UI](assets/one-option-before-after.svg)
+
+_Illustrative UI mockup—not the output of a live prompt benchmark._
 
 ![Intent mismatches before and after Choose UI](assets/intent-before-after.svg)
 

@@ -43,6 +43,8 @@ Keep recommendations deterministic for the same structured input. If the correct
 
 Keep `SKILL.md` concise and route detailed guidance to one-level-deep reference files. Add scripts only for deterministic or repeatedly executed work. Do not add framework boilerplate until a real evaluation case requires it.
 
+Design-system adapters are especially welcome. Good first adapters include Material 3, shadcn/ui, Radix, Ant Design, and Carbon. Start with the `Add a design-system adapter` issue template, map generic interaction families to documented component names, and add at least one evaluation case that proves the mapping changes a recommendation or its wording.
+
 ## Pull request checklist
 
 - The change solves a concrete user problem.
