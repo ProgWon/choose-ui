@@ -23,6 +23,8 @@ class RecommendationCases(unittest.TestCase):
                 result = choose_ui(case["input"])
                 self.assertEqual(case["expected"], result.recommendation)
                 self.assertEqual(case["rule"], result.rule_id)
+                if "confidence" in case:
+                    self.assertEqual(case["confidence"], result.confidence)
 
     def test_negative_option_count_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "cannot be negative"):

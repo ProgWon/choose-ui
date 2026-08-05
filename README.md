@@ -9,6 +9,8 @@ Choose UI is a Claude skill that decides which interaction pattern fits a produc
 
 ![A one-option dropdown before and after Choose UI](assets/one-option-before-after.svg)
 
+_Illustrative UI mockup—not the output of a live prompt benchmark._
+
 It starts with a deliberately sharp rule:
 
 > If there is only one available option, do not render a dropdown. Apply the value and present it as readable text.
@@ -16,6 +18,8 @@ It starts with a deliberately sharp rule:
 The useful part is everything around that rule: actions are not selections, navigation is not a segmented control, short comparable choices should not be hidden, and a mobile picker is not merely a smaller desktop dropdown.
 
 ![Intent mismatches before and after Choose UI](assets/intent-before-after.svg)
+
+_Illustrative UI mockup—not the output of a live prompt benchmark._
 
 ## Why this exists
 
@@ -126,10 +130,10 @@ This prevents the documentation and executable baseline from silently recommendi
 
 - Empty, loading, and one-option states
 - Boolean switches and submitted checkboxes
-- Buttons, action menus, links, tabs, and navigation lists
+- Buttons, action menus, links, tabs, navigation lists, and searchable navigation palettes
 - Radios, radio cards, checkboxes, and comparison groups
 - Segmented controls and selection chips
-- Selects, editable and multi-select comboboxes
+- Selects, text inputs, editable comboboxes, and tokenized multi-select comboboxes
 - Mobile view, radio, and checkbox sheets
 - Credible option growth rather than fixture-only cardinality
 - Existing design-system inventory and SEED component mapping
@@ -161,6 +165,20 @@ python3 -m unittest discover -s tests -v
 ```
 
 [`evals/cases.json`](evals/cases.json) covers deterministic boundary decisions. [`evals/skill-cases.json`](evals/skill-cases.json) covers skill activation, non-activation, output discipline, ambiguous judgment, and design-system adaptation in fresh Claude sessions.
+
+Run the six trigger cases against authenticated Claude Code. Every prompt gets a fresh, non-persistent session, and activation is measured from the actual `Skill` tool call:
+
+```bash
+python3 evals/run_skill_evals.py --suite trigger
+```
+
+Run behavior and output-shape cases as well, or repeat cases to estimate a less noisy rate:
+
+```bash
+python3 evals/run_skill_evals.py --suite all --repeats 3 --model sonnet
+```
+
+Automatic scoring is language-tolerant for Korean and English field labels and component terms. Judgment items under `semantic_checks` are printed for human or model-judge review rather than treated as brittle substring assertions. Live model evaluations are intentionally not part of CI because they require Claude authentication, spend budget, and can vary between runs.
 
 ## Contributing
 

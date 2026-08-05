@@ -44,6 +44,7 @@ class SkillStructure(unittest.TestCase):
         self.assertTrue((SKILL_DIR / "scripts" / "recommend.py").is_file())
         self.assertTrue((SKILL_DIR / "scripts" / "rule_engine.py").is_file())
         self.assertTrue((SKILL_DIR / "scripts" / "rules_tool.py").is_file())
+        self.assertTrue((ROOT / "evals" / "run_skill_evals.py").is_file())
 
 
 if __name__ == "__main__":

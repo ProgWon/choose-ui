@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Model-level cases for testing activation, output discipline, and judgment. Run each prompt in a fresh Claude session with and without the skill.",
+  "version": 2,
+  "description": "Live Claude Code cases for activation, output discipline, and judgment. Each prompt runs in a fresh session. Automatic scoring uses component terms and language-tolerant field aliases; semantic_checks are reported for human or model-judge review.",
   "trigger_cases": [
     {
       "name": "generic form review triggers",
@@ -38,46 +38,45 @@
       "name": "quick one-option answer",
       "prompt": "배송 옵션이 일반 배송 하나뿐이야. Select를 써야 해?",
       "expected_mode": "quick",
-      "expected_recommendation": "static value",
-      "must_include": ["Recommendation", "Why"],
-      "must_not_include": ["disabled dropdown", "여러 대안"]
+      "recommendation_terms": ["static value", "정적 값"],
+      "semantic_checks": ["Chooses one pattern rather than listing alternatives", "Explains that one fixed option creates no meaningful choice"]
     },
     {
-      "name": "submitted Boolean answer",
+      "name": "submitted Boolean consent",
       "prompt": "가입 폼에서 '마케팅 알림에 동의합니다'는 저장 버튼을 눌러야 제출돼. 어떤 컨트롤이어야 해?",
-      "expected_mode": "quick",
-      "expected_recommendation": "checkbox",
-      "must_include": ["submit"],
-      "must_not_include": ["switch"]
+      "expected_mode": "full",
+      "recommendation_terms": ["checkbox", "체크박스"],
+      "confidence_terms": ["high", "높음"],
+      "semantic_checks": ["Distinguishes submit-time consent from an immediate setting", "Does not recommend a switch"]
     },
     {
       "name": "search wins over chips",
       "prompt": "모바일 상품 목록에 6개의 다중 선택 필터가 있고 자주 바꾸지만, 사용자는 필터명을 검색해야 해. 전체 판단 기록으로 답해줘.",
       "expected_mode": "full",
-      "expected_recommendation": "multi-select combobox",
-      "expected_confidence": "high",
-      "must_include": ["Confidence", "Avoid", "Required states", "Accessibility", "Assumptions", "Evidence"]
+      "recommendation_terms": ["multi-select combobox", "다중 선택 콤보박스"],
+      "confidence_terms": ["high", "높음"],
+      "semantic_checks": ["Treats explicit search as stronger than the compact chip rule"]
     },
     {
       "name": "large view switch stays a view command",
       "prompt": "같은 차트를 보는 방식이 9개야. 데스크톱에서 Select로 바꾸면 될까? 전체 판단 기록을 줘.",
       "expected_mode": "full",
-      "expected_recommendation": "view menu",
-      "must_not_include": ["radio group", "form select"]
+      "recommendation_terms": ["view menu", "뷰 메뉴"],
+      "semantic_checks": ["Keeps the interaction in the view-switch family rather than form input"]
     },
     {
       "name": "ambiguous context lowers confidence",
       "prompt": "옵션이 5개인 컨트롤이 필요해. 어떤 걸 써야 해?",
       "expected_mode": "full",
-      "expected_confidence": "low",
-      "must_include": ["intent", "missing"]
+      "confidence_terms": ["low", "낮음"],
+      "semantic_checks": ["Names intent as the missing fact that could change the component family"]
     },
     {
       "name": "project component inventory adapts names",
       "prompt": "이 저장소는 SEED를 쓰고 있어. 설명이 긴 요금제 4개 중 하나를 제출 전에 고르게 할 때 실제 SEED 컴포넌트 이름으로 추천해줘.",
       "expected_mode": "full",
-      "expected_recommendation": "Select Box",
-      "must_include": ["Radio", "SEED"]
+      "recommendation_terms": ["Select Box", "셀렉트 박스"],
+      "semantic_checks": ["Specifies the Radio control and does not invent package APIs"]
     }
   ]
 }
