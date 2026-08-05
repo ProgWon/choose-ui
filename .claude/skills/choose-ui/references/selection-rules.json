@@ -1,20 +1,734 @@
 {
-  "version": 1,
+  "version": 2,
+  "description": "Canonical ordered rules for Choose UI. The first matching rule wins.",
   "thresholds": {
     "segmented_max": 4,
-    "radio_max": 6,
+    "tabs_max": 5,
+    "radio_default_max": 4,
+    "radio_compare_max": 6,
+    "mobile_sheet_min": 6,
     "visible_multi_max": 8,
-    "combobox_min": 12,
-    "tabs_max": 5
+    "combobox_min": 12
   },
-  "required_states": [
-    "default",
-    "focus",
-    "selected",
-    "disabled",
-    "error",
-    "loading",
-    "empty",
-    "long-content"
+  "sources": {
+    "seed-radio": "https://seed-design.io/components/radio",
+    "seed-segmented": "https://seed-design.io/components/segmented-control",
+    "seed-select-box": "https://seed-design.io/components/select-box",
+    "govuk-select": "https://design-system.service.gov.uk/components/select/",
+    "carbon-dropdown": "https://carbondesignsystem.com/components/dropdown/usage/",
+    "apple-popup": "https://developer.apple.com/design/human-interface-guidelines/pop-up-buttons",
+    "wai-apg": "https://www.w3.org/WAI/ARIA/apg/",
+    "wcag": "https://www.w3.org/TR/WCAG22/"
+  },
+  "rules": [
+    {
+      "id": "selection-loading",
+      "section": "No choice and Boolean values",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "value_kind": "selection",
+        "options": {"max": 0},
+        "effective_options": {"min": 1}
+      },
+      "recommendation": "loading selection region",
+      "confidence": "high",
+      "avoid": "Empty or disabled picker",
+      "reason": "The current empty set is unresolved; design for the credible option range.",
+      "states": ["loading", "resolved", "empty", "error"],
+      "accessibility": "Announce loading completion and preserve focus when the resolved control appears.",
+      "evidence": ["wcag"]
+    },
+    {
+      "id": "action-none",
+      "section": "Actions and navigation",
+      "when": {"intent": "action", "effective_options": {"max": 0}},
+      "recommendation": "no action trigger",
+      "confidence": "high",
+      "avoid": "Empty menu or disabled overflow button",
+      "reason": "No command is available, so an action trigger would open an empty surface.",
+      "states": ["permission-loading", "hidden", "permission-error"],
+      "accessibility": "Remove unavailable actions from the accessibility tree.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "action-one",
+      "section": "Actions and navigation",
+      "when": {"intent": "action", "effective_options": {"min": 1, "max": 1}},
+      "recommendation": "button",
+      "confidence": "high",
+      "avoid": "One-item action menu",
+      "reason": "One command needs one direct action, not a disclosure step.",
+      "states": ["default", "focus", "pressed", "disabled", "loading", "error"],
+      "accessibility": "Use a native button with an action-oriented accessible name.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "action-many",
+      "section": "Actions and navigation",
+      "when": {"intent": "action", "effective_options": {"min": 2}},
+      "recommendation": "action menu",
+      "confidence": "high",
+      "avoid": "Select or combobox",
+      "reason": "The user is choosing among commands, not entering a value.",
+      "states": ["closed", "open", "focus", "disabled", "in-progress", "success", "error"],
+      "accessibility": "Support Escape, arrow keys, focus return, and clear command names.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "navigation-none",
+      "section": "Actions and navigation",
+      "when": {"intent": "navigation", "effective_options": {"max": 0}},
+      "recommendation": "no navigation control",
+      "confidence": "high",
+      "avoid": "Empty tabs or navigation menu",
+      "reason": "No destination is available.",
+      "states": ["loading", "hidden", "error"],
+      "accessibility": "Do not leave an unlabeled or disabled navigation trigger in the accessibility tree.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "navigation-one",
+      "section": "Actions and navigation",
+      "when": {"intent": "navigation", "effective_options": {"min": 1, "max": 1}},
+      "recommendation": "direct link",
+      "confidence": "high",
+      "avoid": "One-item menu or tab strip",
+      "reason": "One destination needs a direct path, not a chooser.",
+      "states": ["default", "focus", "visited"],
+      "accessibility": "Use a descriptive link name that identifies the destination.",
+      "evidence": ["wcag"]
+    },
+    {
+      "id": "navigation-tabs",
+      "section": "Actions and navigation",
+      "when": {"intent": "navigation", "effective_options": {"min": 2, "max_ref": "tabs_max"}},
+      "recommendation": "tabs",
+      "confidence": "medium",
+      "avoid": "Segmented control",
+      "reason": "A short set of peer sections can remain visible as navigation.",
+      "states": ["default", "focus", "selected", "disabled", "overflow"],
+      "accessibility": "Use tablist, tab, and tabpanel semantics with predictable arrow-key behavior.",
+      "assumption": "The destinations are peer sections, not unrelated pages.",
+      "evidence": ["seed-segmented", "wai-apg"]
+    },
+    {
+      "id": "navigation-list",
+      "section": "Actions and navigation",
+      "when": {"intent": "navigation", "effective_options": {"min_exclusive_ref": "tabs_max"}},
+      "recommendation": "navigation list",
+      "confidence": "medium",
+      "avoid": "Overfilled tabs or form select",
+      "reason": "The destination count exceeds a compact tab set.",
+      "states": ["default", "focus", "current", "collapsed", "expanded"],
+      "accessibility": "Expose the current destination and preserve normal link behavior.",
+      "assumption": "The destinations can be organized into a visible or disclosed hierarchy.",
+      "evidence": ["wcag"]
+    },
+    {
+      "id": "boolean-immediate",
+      "section": "No choice and Boolean values",
+      "when": {"intent": ["input", "setting"], "value_kind": "boolean", "effect": "immediate"},
+      "recommendation": "switch",
+      "confidence": "high",
+      "avoid": "Radio group or select",
+      "reason": "This is an immediate on/off value whose state changes directly.",
+      "states": ["on", "off", "focus", "disabled", "loading", "error"],
+      "accessibility": "Expose the switch role, label, and current checked state.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "boolean-submit",
+      "section": "No choice and Boolean values",
+      "when": {"intent": ["input", "setting"], "value_kind": "boolean", "effect": "submit"},
+      "recommendation": "checkbox",
+      "confidence": "high",
+      "avoid": "Switch",
+      "reason": "This independent yes/no answer is committed with the surrounding form.",
+      "states": ["checked", "unchecked", "focus", "disabled", "error"],
+      "accessibility": "Associate the label with the checkbox and keep the full label clickable.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "selection-none",
+      "section": "No choice and Boolean values",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "value_kind": "selection",
+        "effective_options": {"max": 0}
+      },
+      "recommendation": "empty state",
+      "confidence": "high",
+      "avoid": "Empty dropdown",
+      "reason": "There is nothing to select.",
+      "states": ["loading", "empty", "error", "recovery"],
+      "accessibility": "Announce the empty-state message and expose a recovery action when one exists.",
+      "evidence": ["wcag"]
+    },
+    {
+      "id": "selection-one-single",
+      "section": "No choice and Boolean values",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "value_kind": "selection",
+        "selection": "single",
+        "effective_options": {"min": 1, "max": 1}
+      },
+      "recommendation": "static value",
+      "confidence": "high",
+      "avoid": "Disabled or one-item dropdown",
+      "reason": "One fixed option creates no meaningful choice.",
+      "states": ["loading", "resolved", "unavailable", "long-content"],
+      "accessibility": "Present the value as readable text and include it in submitted data programmatically.",
+      "evidence": ["govuk-select"]
+    },
+    {
+      "id": "selection-one-multiple",
+      "section": "No choice and Boolean values",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "value_kind": "selection",
+        "selection": "multiple",
+        "effective_options": {"min": 1, "max": 1}
+      },
+      "recommendation": "checkbox",
+      "confidence": "medium",
+      "avoid": "Multi-select",
+      "reason": "One optional item is an independent include/exclude answer.",
+      "states": ["checked", "unchecked", "focus", "disabled", "error"],
+      "accessibility": "Keep the full text label in the checkbox activation target.",
+      "assumption": "The item may be included or excluded; it is not forced.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "multiple-search",
+      "section": "Multiple selection",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "selection": "multiple",
+        "search": true,
+        "effective_options": {"min": 2}
+      },
+      "recommendation": "multi-select combobox",
+      "confidence": "high",
+      "avoid": "Chips or unsearchable checklist",
+      "reason": "Explicit search needs retrieval before any compact visible-filter rule.",
+      "states": ["closed", "open", "query", "results", "selected", "no-results", "error"],
+      "accessibility": "Follow an established combobox pattern and announce results and token removal.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "single-custom",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "selection": "single",
+        "custom_value": true,
+        "effective_options": {"min": 2}
+      },
+      "recommendation": "editable combobox",
+      "confidence": "high",
+      "avoid": "Closed select",
+      "reason": "Users must enter a value outside the predefined set.",
+      "states": ["closed", "open", "query", "results", "selected", "no-results", "error"],
+      "accessibility": "Follow an established editable-combobox keyboard and announcement pattern.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "single-search",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "selection": "single",
+        "search": true,
+        "effective_options": {"min": 2}
+      },
+      "recommendation": "combobox",
+      "confidence": "high",
+      "avoid": "Unsearchable select",
+      "reason": "Explicit retrieval needs search or type-ahead.",
+      "states": ["closed", "open", "query", "results", "selected", "no-results", "error"],
+      "accessibility": "Follow an established combobox keyboard pattern and announce result changes.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "single-large",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "filter", "setting"],
+        "selection": "single",
+        "effective_options": {"min_ref": "combobox_min"}
+      },
+      "recommendation": "combobox",
+      "confidence": "medium",
+      "avoid": "Unsearchable long select",
+      "reason": "The option count makes retrieval faster than scanning.",
+      "states": ["closed", "open", "query", "results", "selected", "no-results", "error"],
+      "accessibility": "Use native semantics when sufficient or a tested combobox pattern when custom.",
+      "assumption": "Labels are recognizable enough to search.",
+      "evidence": ["govuk-select", "wai-apg"]
+    },
+    {
+      "id": "view-switch-none",
+      "section": "View switches and filters",
+      "when": {"intent": "view-switch", "effective_options": {"max": 0}},
+      "recommendation": "no view control",
+      "confidence": "high",
+      "avoid": "Empty segmented control or view menu",
+      "reason": "No alternate view is available.",
+      "states": ["loading", "empty", "error"],
+      "accessibility": "Do not expose an empty view chooser to assistive technology.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "view-switch-one",
+      "section": "View switches and filters",
+      "when": {"intent": "view-switch", "effective_options": {"min": 1, "max": 1}},
+      "recommendation": "static view label",
+      "confidence": "high",
+      "avoid": "One-item segmented control or view menu",
+      "reason": "One presentation mode is a state label, not a meaningful switch.",
+      "states": ["loading", "resolved", "error"],
+      "accessibility": "Expose the current view as ordinary descriptive text.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "view-switch-short",
+      "section": "View switches and filters",
+      "when": {"intent": "view-switch", "effective_options": {"min": 2, "max_ref": "segmented_max"}},
+      "recommendation": "segmented control",
+      "confidence": "high",
+      "avoid": "Tabs",
+      "reason": "A short set of choices immediately changes the presentation of the same content.",
+      "states": ["default", "focus", "selected", "disabled", "loading", "error", "overflow", "long-content"],
+      "accessibility": "Expose one selected state and support keyboard movement consistently.",
+      "evidence": ["seed-segmented", "wai-apg"]
+    },
+    {
+      "id": "view-switch-mobile-long",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "view-switch",
+        "platform": "mobile",
+        "effective_options": {"min_exclusive_ref": "segmented_max"}
+      },
+      "recommendation": "button opening a view sheet",
+      "confidence": "medium",
+      "avoid": "Overfilled segmented control or form select",
+      "reason": "The view count exceeds a compact segmented control on a touch surface.",
+      "states": ["closed", "open", "selected", "loading", "error"],
+      "accessibility": "Use a labeled trigger, checked view items, and predictable focus restoration.",
+      "evidence": ["seed-segmented", "wai-apg"]
+    },
+    {
+      "id": "view-switch-long",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "view-switch",
+        "platform": ["any", "desktop"],
+        "effective_options": {"min_exclusive_ref": "segmented_max"}
+      },
+      "recommendation": "view menu",
+      "confidence": "medium",
+      "avoid": "Radio group or form select",
+      "reason": "The interaction remains a view-mode command even when the compact control no longer fits.",
+      "states": ["closed", "open", "focus", "selected", "loading", "error"],
+      "accessibility": "Expose checked menu items and return focus to the view trigger on close.",
+      "evidence": ["seed-segmented", "wai-apg"]
+    },
+    {
+      "id": "filter-single-mobile",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "filter",
+        "selection": "single",
+        "platform": "mobile",
+        "effective_options": {"min_ref": "mobile_sheet_min", "max_exclusive_ref": "combobox_min"}
+      },
+      "recommendation": "button opening a selection sheet",
+      "confidence": "high",
+      "avoid": "Small desktop-style popup",
+      "reason": "The filter needs a touch-friendly scanning surface.",
+      "states": ["closed", "open", "selected", "apply", "cancel", "error"],
+      "accessibility": "Use an accessible trigger and restore focus when the sheet closes.",
+      "evidence": ["seed-radio", "wai-apg"]
+    },
+    {
+      "id": "filter-single-frequent",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "filter",
+        "selection": "single",
+        "frequency": "high",
+        "effective_options": {"min": 2, "max_ref": "segmented_max"}
+      },
+      "recommendation": "segmented control",
+      "confidence": "high",
+      "avoid": "Closed select",
+      "reason": "A short, frequently changed filter benefits from visible immediate choices.",
+      "states": ["default", "focus", "selected", "disabled", "loading", "error"],
+      "accessibility": "Expose one selected filter state and support keyboard operation.",
+      "evidence": ["seed-segmented"]
+    },
+    {
+      "id": "filter-single-compact",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "filter",
+        "selection": "single",
+        "effective_options": {"min": 2, "max_exclusive_ref": "combobox_min"}
+      },
+      "recommendation": "select",
+      "confidence": "high",
+      "avoid": "Radio group for a low-frequency compact filter",
+      "reason": "One compact, low-frequency filter does not require visible comparison.",
+      "states": ["default", "focus", "selected", "disabled", "error", "long-content"],
+      "accessibility": "Prefer a native select when its behavior is sufficient and keep a persistent label.",
+      "evidence": ["govuk-select", "carbon-dropdown"]
+    },
+    {
+      "id": "filter-multiple-frequent",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "filter",
+        "selection": "multiple",
+        "frequency": "high",
+        "rich_options": false,
+        "effective_options": {"min": 2, "max_ref": "visible_multi_max"}
+      },
+      "recommendation": "selection chips",
+      "confidence": "high",
+      "avoid": "Closed multi-select",
+      "reason": "Short keyword filters can remain visible for frequent toggling.",
+      "states": ["default", "focus", "selected", "disabled", "overflow"],
+      "accessibility": "Expose each chip's pressed or checked state and do not rely on color alone.",
+      "evidence": ["seed-radio", "wcag"]
+    },
+    {
+      "id": "filter-multiple-rich",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "filter",
+        "selection": "multiple",
+        "rich_options": true,
+        "effective_options": {"min": 2, "max_ref": "visible_multi_max"}
+      },
+      "recommendation": "checkbox cards",
+      "confidence": "high",
+      "avoid": "Selection chips that hide option descriptions",
+      "reason": "Rich filter details must stay visible next to each independent choice.",
+      "states": ["checked", "unchecked", "focus", "disabled", "error", "long-content"],
+      "accessibility": "Associate the full card content with its checkbox and group the choices under one label.",
+      "evidence": ["seed-select-box", "wai-apg"]
+    },
+    {
+      "id": "filter-multiple-visible",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "filter",
+        "selection": "multiple",
+        "effective_options": {"min": 2, "max_ref": "visible_multi_max"}
+      },
+      "recommendation": "checkbox group",
+      "confidence": "high",
+      "avoid": "Hidden multi-select",
+      "reason": "The full filter set fits as visible independent choices.",
+      "states": ["checked", "unchecked", "focus", "disabled", "error", "long-content"],
+      "accessibility": "Use a group label and make each text label part of its checkbox target.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "filter-multiple-mobile",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "filter",
+        "selection": "multiple",
+        "platform": "mobile",
+        "effective_options": {"min_exclusive_ref": "visible_multi_max"}
+      },
+      "recommendation": "button opening a checkbox sheet",
+      "confidence": "high",
+      "avoid": "Dense inline checklist",
+      "reason": "The larger surface supports touch scanning and combined application.",
+      "states": ["closed", "open", "selected", "apply", "cancel", "error"],
+      "accessibility": "Restore focus on close and expose the selected count on the trigger.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "filter-multiple-panel",
+      "section": "View switches and filters",
+      "when": {
+        "intent": "filter",
+        "selection": "multiple",
+        "platform": ["any", "desktop"],
+        "effective_options": {"min_exclusive_ref": "visible_multi_max"}
+      },
+      "recommendation": "filter panel with checkboxes",
+      "confidence": "medium",
+      "avoid": "Unsearchable multi-select listbox",
+      "reason": "Many combined criteria need a dedicated surface and visible active filters.",
+      "states": ["closed", "open", "selected", "apply", "clear", "error"],
+      "accessibility": "Group criteria, expose active filters outside the panel, and preserve keyboard order.",
+      "evidence": ["wcag"]
+    },
+    {
+      "id": "input-multiple-rich",
+      "section": "Multiple selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "multiple",
+        "rich_options": true,
+        "effective_options": {"min": 2, "max_ref": "visible_multi_max"}
+      },
+      "recommendation": "checkbox cards",
+      "confidence": "high",
+      "avoid": "Closed multi-select",
+      "reason": "Descriptions must remain visible for comparing independent choices.",
+      "states": ["checked", "unchecked", "focus", "disabled", "error", "long-content"],
+      "accessibility": "Associate the full card content with its checkbox and group the choices under one label.",
+      "evidence": ["seed-select-box", "wai-apg"]
+    },
+    {
+      "id": "input-multiple-compare",
+      "section": "Multiple selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "multiple",
+        "comparison": "high",
+        "effective_options": {"min": 2, "max_ref": "visible_multi_max"}
+      },
+      "recommendation": "checkbox comparison group",
+      "confidence": "high",
+      "avoid": "Closed multi-select",
+      "reason": "A comparable short set should remain visible while allowing independent choices.",
+      "states": ["checked", "unchecked", "focus", "disabled", "error", "long-content"],
+      "accessibility": "Use a group label and keep comparison details associated with each checkbox.",
+      "evidence": ["seed-select-box", "wai-apg"]
+    },
+    {
+      "id": "input-multiple-visible",
+      "section": "Multiple selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "multiple",
+        "effective_options": {"min": 2, "max_ref": "visible_multi_max"}
+      },
+      "recommendation": "checkbox group",
+      "confidence": "high",
+      "avoid": "Multi-select",
+      "reason": "The full option set fits as visible independent choices.",
+      "states": ["checked", "unchecked", "focus", "disabled", "error", "long-content"],
+      "accessibility": "Use a group label and make each text label part of its checkbox target.",
+      "evidence": ["seed-select-box", "wai-apg"]
+    },
+    {
+      "id": "input-multiple-mobile",
+      "section": "Multiple selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "multiple",
+        "platform": "mobile",
+        "effective_options": {"min_exclusive_ref": "visible_multi_max"}
+      },
+      "recommendation": "button opening a checkbox sheet",
+      "confidence": "high",
+      "avoid": "Dense inline checklist",
+      "reason": "Many values need a touch-friendly selection surface.",
+      "states": ["closed", "open", "selected", "apply", "cancel", "error"],
+      "accessibility": "Restore focus on close and expose the selected count on the trigger.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "input-multiple-large",
+      "section": "Multiple selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "multiple",
+        "platform": ["any", "desktop"],
+        "effective_options": {"min_exclusive_ref": "visible_multi_max"}
+      },
+      "recommendation": "multi-select combobox",
+      "confidence": "medium",
+      "avoid": "Native multi-select listbox",
+      "reason": "The large set benefits from retrieval and visible selected tokens.",
+      "states": ["closed", "open", "query", "results", "selected", "no-results", "error"],
+      "accessibility": "Follow an established combobox pattern and announce results and token removal.",
+      "assumption": "Labels are recognizable enough to search.",
+      "evidence": ["wai-apg"]
+    },
+    {
+      "id": "input-single-mobile-rich",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "platform": "mobile",
+        "rich_options": true,
+        "effective_options": {"min_ref": "mobile_sheet_min", "max_exclusive_ref": "combobox_min"}
+      },
+      "recommendation": "input button opening a rich comparison sheet",
+      "confidence": "high",
+      "avoid": "Closed select",
+      "reason": "Rich option content needs a larger touch-friendly comparison surface.",
+      "states": ["closed", "open", "selected", "apply", "cancel", "error", "long-content"],
+      "accessibility": "Associate details with each option and restore focus to the trigger when the sheet closes.",
+      "evidence": ["seed-radio", "seed-select-box"]
+    },
+    {
+      "id": "input-single-mobile-compare",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "platform": "mobile",
+        "comparison": "high",
+        "effective_options": {"min_ref": "mobile_sheet_min", "max_exclusive_ref": "combobox_min"}
+      },
+      "recommendation": "input button opening a comparison sheet",
+      "confidence": "high",
+      "avoid": "Closed select",
+      "reason": "Detailed comparison needs more room than an inline control provides.",
+      "states": ["closed", "open", "selected", "apply", "cancel", "error", "long-content"],
+      "accessibility": "Use a labeled trigger, accessible sheet semantics, and predictable focus restoration.",
+      "evidence": ["seed-radio", "seed-select-box"]
+    },
+    {
+      "id": "input-single-mobile",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "platform": "mobile",
+        "effective_options": {"min_ref": "mobile_sheet_min", "max_exclusive_ref": "combobox_min"}
+      },
+      "recommendation": "input button opening a selection sheet",
+      "confidence": "high",
+      "avoid": "Small desktop-style popup",
+      "reason": "The option count benefits from a touch-friendly scanning surface.",
+      "states": ["closed", "open", "selected", "apply", "cancel", "error"],
+      "accessibility": "Use an accessible trigger and restore focus when the sheet closes.",
+      "evidence": ["seed-radio", "wai-apg"]
+    },
+    {
+      "id": "input-single-mobile-rich-visible",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "platform": "mobile",
+        "rich_options": true,
+        "effective_options": {"min": 2, "max_exclusive_ref": "mobile_sheet_min"}
+      },
+      "recommendation": "radio cards",
+      "confidence": "high",
+      "avoid": "Closed select",
+      "reason": "The rich set remains small enough for visible mobile comparison.",
+      "states": ["default", "focus", "selected", "disabled", "error", "long-content"],
+      "accessibility": "Associate the full card content with its radio and group the choices under one label.",
+      "evidence": ["seed-radio", "seed-select-box"]
+    },
+    {
+      "id": "input-single-mobile-compare-visible",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "platform": "mobile",
+        "comparison": "high",
+        "effective_options": {"min": 2, "max_exclusive_ref": "mobile_sheet_min"}
+      },
+      "recommendation": "radio group",
+      "confidence": "high",
+      "avoid": "Closed select",
+      "reason": "The comparable set remains small enough to keep visible on mobile.",
+      "states": ["default", "focus", "selected", "disabled", "error", "long-content"],
+      "accessibility": "Use a group label and include each text label in the activation target.",
+      "evidence": ["seed-radio", "carbon-dropdown"]
+    },
+    {
+      "id": "input-single-rich",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "platform": ["any", "desktop"],
+        "rich_options": true,
+        "effective_options": {"min": 2, "max_ref": "radio_compare_max"}
+      },
+      "recommendation": "radio cards",
+      "confidence": "high",
+      "avoid": "Closed select",
+      "reason": "Descriptions must remain visible for direct comparison.",
+      "states": ["default", "focus", "selected", "disabled", "error", "long-content"],
+      "accessibility": "Associate the full card content with its radio and group the choices under one label.",
+      "evidence": ["seed-radio", "seed-select-box"]
+    },
+    {
+      "id": "input-single-compare",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "platform": ["any", "desktop"],
+        "comparison": "high",
+        "effective_options": {"min": 2, "max_ref": "radio_compare_max"}
+      },
+      "recommendation": "radio group",
+      "confidence": "high",
+      "avoid": "Closed select",
+      "reason": "A comparable short set should remain visible.",
+      "states": ["default", "focus", "selected", "disabled", "error", "long-content"],
+      "accessibility": "Use a group label and include each text label in the activation target.",
+      "evidence": ["seed-radio", "carbon-dropdown"]
+    },
+    {
+      "id": "input-single-short",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "effective_options": {"min": 2, "max_ref": "radio_default_max"}
+      },
+      "recommendation": "radio group",
+      "confidence": "high",
+      "avoid": "Select",
+      "reason": "The short set fits as visible single-choice input.",
+      "states": ["default", "focus", "selected", "disabled", "error", "long-content"],
+      "accessibility": "Use a fieldset and legend on the web and keep labels clickable.",
+      "evidence": ["seed-radio", "carbon-dropdown"]
+    },
+    {
+      "id": "input-single-comparison-list",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "comparison": "high",
+        "platform": ["any", "desktop"],
+        "effective_options": {"min_exclusive_ref": "radio_compare_max", "max_exclusive_ref": "combobox_min"}
+      },
+      "recommendation": "comparison list with radio selection",
+      "confidence": "medium",
+      "avoid": "Closed select",
+      "reason": "Detailed comparison remains important despite the longer list.",
+      "states": ["default", "focus", "selected", "disabled", "error", "long-content"],
+      "accessibility": "Keep option details associated with each radio and preserve a clear group label.",
+      "evidence": ["seed-radio"]
+    },
+    {
+      "id": "input-single-compact",
+      "section": "Single selection",
+      "when": {
+        "intent": ["input", "setting"],
+        "selection": "single",
+        "effective_options": {"min_exclusive_ref": "radio_default_max", "max_exclusive_ref": "combobox_min"}
+      },
+      "recommendation": "select",
+      "confidence": "high",
+      "avoid": "Long radio list",
+      "reason": "The simple set does not need visible comparison or search.",
+      "states": ["default", "focus", "selected", "disabled", "error", "long-content"],
+      "accessibility": "Prefer the native select when its behavior is sufficient and provide a persistent label.",
+      "evidence": ["govuk-select", "carbon-dropdown", "apple-popup"]
+    }
   ]
 }

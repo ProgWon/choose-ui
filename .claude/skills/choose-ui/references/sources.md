@@ -5,8 +5,8 @@ Choose UI is an original synthesis. Its thresholds are practical defaults, not q
 ## Design systems
 
 - [SEED Radio](https://seed-design.io/components/radio) — distinguishes short visible radio groups from larger picker surfaces and discusses single-selection usage.
-- [SEED Segmented Control](https://seed-design.io/docs/components/segmented-control) — limits segment count and distinguishes content manipulation from navigation.
-- [SEED Select Box](https://seed-design.io/docs/components/select-box) — distinguishes detailed selection from lightweight chip selection and separates selection from submission.
+- [SEED Segmented Control](https://seed-design.io/components/segmented-control) — limits segment count and distinguishes content manipulation from navigation.
+- [SEED Select Box](https://seed-design.io/components/select-box) — distinguishes detailed selection from lightweight chip selection and separates selection from submission.
 - [GOV.UK Select](https://design-system.service.gov.uk/components/select/) — recommends select for long lists only with caution and points to visible alternatives.
 - [GOV.UK Radios](https://design-system.service.gov.uk/components/radios/) — documents single-choice form behavior and labeling.
 - [Carbon Dropdown](https://carbondesignsystem.com/components/dropdown/usage/) — distinguishes dropdown, multiselect, and combobox and recommends visible radios for two options.

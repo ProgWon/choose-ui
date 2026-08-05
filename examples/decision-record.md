@@ -11,6 +11,8 @@ Why: One fixed option creates no meaningful user choice.
 Avoid: A disabled or one-item dropdown falsely implies choice.
 Required states: loading, resolved, unavailable, long-content
 Accessibility: Present the value as readable text and include it in submitted data programmatically.
+Assumptions: The method is fixed after loading and cannot be declined.
+Evidence: Product checkout requirements; GOV.UK Select guidance.
 ```
 
 ## Four delivery speeds
@@ -24,6 +26,8 @@ Why: Four detailed options should remain visible because comparison is important
 Avoid: A closed select forces users to remember hidden alternatives.
 Required states: default, focus, selected, disabled, error, long-content
 Accessibility: Associate the full card content with its radio and group the choices under one label.
+Assumptions: The option descriptions are consequential to the choice.
+Evidence: SEED Radio and Select Box guidance.
 ```
 
 ## Sort commands disguised as a form field
@@ -37,4 +41,6 @@ Why: The user is choosing among commands, not entering a value.
 Avoid: Select and combobox patterns communicate data entry and hide destructive semantics.
 Required states: closed, open, focus, disabled
 Accessibility: Support Escape, arrow keys, focus return, and explicit command names.
+Assumptions: The commands operate on the current order and do not navigate.
+Evidence: WAI-ARIA Authoring Practices Guide.
 ```
